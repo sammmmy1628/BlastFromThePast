@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "blastfromthepast:block/cedar_planks",
+    "side": "blastfromthepast:block/cedar_planks",
+    "top": "blastfromthepast:block/cedar_planks"
+  }
+}

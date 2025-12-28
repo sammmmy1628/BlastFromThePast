@@ -1,0 +1,12 @@
+// 1.20.1	2025-12-24T18:42:01.75659	Tags for minecraft:block mod id blastfromthepast
+010c72fe1d00a0785225114ea4b34980c3e49f99 data/minecraft/tags/blocks/fence_gates.json
+e330622958dbcf6d2f95bba1f0c9794e77a25dc7 data/minecraft/tags/blocks/logs_that_burn.json
+7d9edb4ba082a1cc349906dd45259c4d9b1fb2b6 data/minecraft/tags/blocks/mineable/axe.json
+95340faead849540aefbf78c10599b8d8e1038c1 data/minecraft/tags/blocks/planks.json
+65d03a5388aa8bf36c35c088a5011fea06393774 data/minecraft/tags/blocks/wooden_buttons.json
+a57589859249ae992391415151168fe4eec6cfa2 data/minecraft/tags/blocks/wooden_doors.json
+728ce44dc3e17aba9a805a46bff1bfe87de24810 data/minecraft/tags/blocks/wooden_fences.json
+e07afbc1e2d109d23b02fcdcaa539da9f969796f data/minecraft/tags/blocks/wooden_pressure_plates.json
+ea8ae92d6ad422312c8e844b00e907279bd963ef data/minecraft/tags/blocks/wooden_slabs.json
+54e1e2948517c01906c3cbfe94b745dc3e7e2261 data/minecraft/tags/blocks/wooden_stairs.json
+fe8f1a7b46bfd6a76e65b363afdd210f90001a36 data/minecraft/tags/blocks/wooden_trapdoors.json

@@ -1,0 +1,11 @@
+// 1.20.1	2025-12-24T18:42:01.7409621	Tags for minecraft:item mod id blastfromthepast
+398302c6e5cef203e035bae5848555f883cd6a17 data/minecraft/tags/items/logs_that_burn.json
+95340faead849540aefbf78c10599b8d8e1038c1 data/minecraft/tags/items/planks.json
+ea8ae92d6ad422312c8e844b00e907279bd963ef data/minecraft/tags/items/slabs.json
+65d03a5388aa8bf36c35c088a5011fea06393774 data/minecraft/tags/items/wooden_buttons.json
+a57589859249ae992391415151168fe4eec6cfa2 data/minecraft/tags/items/wooden_doors.json
+728ce44dc3e17aba9a805a46bff1bfe87de24810 data/minecraft/tags/items/wooden_fences.json
+e07afbc1e2d109d23b02fcdcaa539da9f969796f data/minecraft/tags/items/wooden_pressure_plates.json
+ea8ae92d6ad422312c8e844b00e907279bd963ef data/minecraft/tags/items/wooden_slabs.json
+54e1e2948517c01906c3cbfe94b745dc3e7e2261 data/minecraft/tags/items/wooden_stairs.json
+fe8f1a7b46bfd6a76e65b363afdd210f90001a36 data/minecraft/tags/items/wooden_trapdoors.json
