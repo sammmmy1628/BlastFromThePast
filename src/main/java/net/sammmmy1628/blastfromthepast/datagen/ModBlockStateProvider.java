@@ -36,6 +36,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         signBlock(((StandingSignBlock) BFTPBlocks.CEDAR_SIGN.get()), ((WallSignBlock) BFTPBlocks.CEDAR_WALL_SIGN.get()),
                 blockTexture(BFTPBlocks.CEDAR_PLANKS.get()));
         hangingSignBlock(BFTPBlocks.CEDAR_HANGING_SIGN.get(), BFTPBlocks.CEDAR_WALL_HANGING_SIGN.get(), blockTexture(BFTPBlocks.CEDAR_PLANKS.get()));
+
+        simpleBlock(BFTPBlocks.CEDAR_CONE.get(),
+                models().getExistingFile(modLoc("block/cedar_cone")));
+        blockItem(BFTPBlocks.CEDAR_CONE);
+
     }
 
     public void hangingSignBlock(Block signBlock, Block wallSignBlock, ResourceLocation texture) {

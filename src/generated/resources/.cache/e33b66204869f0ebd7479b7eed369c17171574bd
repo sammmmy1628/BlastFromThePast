@@ -1,5 +1,6 @@
-// 1.20.1	2025-12-24T18:42:01.75659	Block States: blastfromthepast
+// 1.20.1	2026-01-02T18:18:54.1414009	Block States: blastfromthepast
 5a5a6b0122bacb9eb715e5c9aa70c0b956b191ad assets/blastfromthepast/blockstates/cedar_button.json
+a77051fae260ce6f4efc81ce519451629bff061b assets/blastfromthepast/blockstates/cedar_cone.json
 cc62e3bc1859626c50d75040d5f1326dd7430c16 assets/blastfromthepast/blockstates/cedar_door.json
 318c70bd9badd8b64862dee4f0782acd5985d3c3 assets/blastfromthepast/blockstates/cedar_fence.json
 6cde06e988687e7645f7ea6fdf2f1b0bee1a7c93 assets/blastfromthepast/blockstates/cedar_fence_gate.json
@@ -47,6 +48,7 @@ a6982f1081dad0ff1e96bb68ddc6229564fa9a3f assets/blastfromthepast/models/block/ce
 c9c5d8a5d0a4ce4954b76a5a8f3215411a88a2e7 assets/blastfromthepast/models/block/cedar_trapdoor_bottom.json
 739501e5cc4a46305400fb4599262b10ae489c0d assets/blastfromthepast/models/block/cedar_trapdoor_open.json
 4fc4cb8e258b7046d277634bd6348d303dabb8fb assets/blastfromthepast/models/block/cedar_trapdoor_top.json
+c8297217079733c219a526dc53f847637b5f15c8 assets/blastfromthepast/models/item/cedar_cone.json
 4c32e9d01f6d6374de35da0cb58481e11a63bbfd assets/blastfromthepast/models/item/cedar_log.json
 944078a7764f59874f265247c1018f71f3ee1115 assets/blastfromthepast/models/item/cedar_planks.json
 704e76da76cef483e025d9b34c710f1e33b4d8ed assets/blastfromthepast/models/item/cedar_stripped_log.json

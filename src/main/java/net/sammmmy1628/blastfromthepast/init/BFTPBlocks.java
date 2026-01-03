@@ -60,6 +60,12 @@ public class BFTPBlocks {
     public static final RegistryObject<Block> CEDAR_WALL_HANGING_SIGN = BLOCKS.register("cedar_wall_hanging_sign",
             () -> new ModWallHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_HANGING_SIGN), BFTPWoodTypes.CEDAR));
 
+    public static final RegistryObject<Block> CEDAR_CONE = registerBlock("cedar_cone",
+            () -> new CedarConeBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SLAB)
+                    .strength(0.2F)
+                    .sound(SoundType.GRASS)
+                    .noOcclusion()
+            ));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
