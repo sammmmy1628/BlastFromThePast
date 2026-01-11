@@ -3,11 +3,13 @@ package net.sammmmy1628.blastfromthepast.init;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SignItem;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
+import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
 
 public class BFTPItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BlastFromThePast.MOD_ID);
@@ -17,6 +19,9 @@ public class BFTPItems {
     public static final RegistryObject<Item> CEDAR_HANGING_SIGN = ITEMS.register("cedar_hanging_sign",
             () -> new HangingSignItem(BFTPBlocks.CEDAR_HANGING_SIGN.get(), BFTPBlocks.CEDAR_WALL_HANGING_SIGN.get(),
                     new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> SNOWDO_SPAWN_EGG = ITEMS.register("snowdo_spawn_egg",
+            () -> new ForgeSpawnEggItem(BFTPEntities.SNOWDO, 0x48446e, 0x67a4da, new Item.Properties()));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

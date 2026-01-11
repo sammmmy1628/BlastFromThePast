@@ -3,12 +3,16 @@ package net.sammmmy1628.blastfromthepast.datagen;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
+import net.sammmmy1628.blastfromthepast.block.custom.eggs.SnowdoEggBlock;
 import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -41,6 +45,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 models().getExistingFile(modLoc("block/cedar_cone")));
         blockItem(BFTPBlocks.CEDAR_CONE);
 
+        createSnowdoEggs();
+
     }
 
     public void hangingSignBlock(Block signBlock, Block wallSignBlock, ResourceLocation texture) {
@@ -57,6 +63,52 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(signBlock, sign);
         simpleBlock(wallSignBlock, sign);
     }
+
+    private void createSnowdoEggs() {
+        BlockModelBuilder three_eggs_smooth = models().withExistingParent("three_eggs_smooth", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/three_eggs_smooth"));
+        BlockModelBuilder three_eggs_chipped = models().withExistingParent("three_eggs_chipped", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/three_eggs_chipped"));
+        BlockModelBuilder three_eggs_cracked = models().withExistingParent("three_eggs_cracked", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/three_eggs_cracked"));
+
+        BlockModelBuilder two_eggs_smooth = models().withExistingParent("two_eggs_smooth", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/two_eggs_smooth"));
+        BlockModelBuilder two_eggs_chipped = models().withExistingParent("two_eggs_chipped", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/two_eggs_chipped"));
+        BlockModelBuilder two_eggs_cracked = models().withExistingParent("two_eggs_cracked", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/two_eggs_cracked"));
+
+        BlockModelBuilder one_egg_smooth = models().withExistingParent("one_egg_smooth", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/one_egg_smooth"));
+        BlockModelBuilder one_egg_chipped = models().withExistingParent("one_egg_chipped", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/one_egg_chipped"));
+        BlockModelBuilder one_egg_cracked = models().withExistingParent("one_egg_cracked", modLoc("block/snowdo_eggs")).texture("1", modLoc("block/one_egg_cracked"));
+
+        getVariantBuilder(BFTPBlocks.SNOWDO_EGG.get()).forAllStates(state -> {
+            int hatch = state.getValue(BlockStateProperties.HATCH);
+            int eggs = state.getValue(SnowdoEggBlock.EGGS);
+
+            BlockModelBuilder modelBuilder;
+            if (eggs == 3) {
+                modelBuilder = switch (hatch) {
+                    case 1 -> three_eggs_chipped;
+                    case 2 -> three_eggs_cracked;
+                    default -> three_eggs_smooth;
+                };
+            } else if (eggs == 2) {
+                modelBuilder = switch (hatch) {
+                    case 1 -> two_eggs_chipped;
+                    case 2 -> two_eggs_cracked;
+                    default -> two_eggs_smooth;
+                };
+            } else {
+                modelBuilder = switch (hatch) {
+                    case 1 -> one_egg_chipped;
+                    case 2 -> one_egg_cracked;
+                    default -> one_egg_smooth;
+                };
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(modelBuilder)
+                    .uvLock(false)
+                    .build();
+        });
+    }
+
 
     private String name(Block block) {
         return key(block).getPath();

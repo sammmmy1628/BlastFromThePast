@@ -13,6 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.block.custom.*;
+import net.sammmmy1628.blastfromthepast.block.custom.eggs.SnowdoEggBlock;
 import net.sammmmy1628.blastfromthepast.init.wood.BFTPWoodTypes;
 
 import java.util.function.Supplier;
@@ -66,6 +67,9 @@ public class BFTPBlocks {
                     .sound(SoundType.GRASS)
                     .noOcclusion()
             ));
+
+    public static final RegistryObject<Block> SNOWDO_EGG = registerBlock("snowdo_eggs",
+            () -> new SnowdoEggBlock(BlockBehaviour.Properties.copy(Blocks.TURTLE_EGG).noOcclusion()));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
