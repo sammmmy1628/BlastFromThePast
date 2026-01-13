@@ -39,7 +39,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         trapdoorItem(BFTPBlocks.CEDAR_TRAPDOOR);
         simpleItem(BFTPItems.CEDAR_SIGN);
         simpleItem(BFTPItems.CEDAR_HANGING_SIGN);
-        simpleBlockItem(BFTPBlocks.SNOWDO_EGG);
+        simpleItem(BFTPItems.SNOWDO_EGG);
         withExistingParent(BFTPItems.SNOWDO_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
     }
 

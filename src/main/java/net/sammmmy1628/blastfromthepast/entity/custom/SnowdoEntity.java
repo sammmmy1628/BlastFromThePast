@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.IForgeShearable;
 import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoBreedGoal;
+import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities; // Asegúrate de importar esto para el breeding
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,10 +40,9 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState tripState = new AnimationState();
 
-    // Variables de lógica
     public float sprintProgress = 0.0F;
     private int shearTimer;
-    private int tripTicks; // Contador para el tiempo que dura tirado
+    private int tripTicks;
 
     public SnowdoEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -127,7 +127,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.entityData.set(IS_TRIPPING, tripped);
         if (tripped) {
             Objects.requireNonNull(this.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(0.0D);
-            this.tripTicks = 35;
+            this.tripTicks = this.isBaby() ? 40 : 36;
             this.getNavigation().stop();
         } else {
             Objects.requireNonNull(this.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(0.18D);
@@ -227,6 +227,6 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
-        return null;
+        return BFTPEntities.SNOWDO.get().create(level);
     }
 }

@@ -42,7 +42,7 @@ public class BFTPCreativeModeTabs {
                         pOutput.accept(BFTPItems.CEDAR_HANGING_SIGN.get());
 
                         pOutput.accept(BFTPItems.SNOWDO_SPAWN_EGG.get());
-                        pOutput.accept(BFTPBlocks.SNOWDO_EGG.get());
+                        pOutput.accept(BFTPItems.SNOWDO_EGG.get());
                     })
                     .build());
 

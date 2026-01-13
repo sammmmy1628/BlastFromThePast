@@ -68,9 +68,6 @@ public class BFTPBlocks {
                     .noOcclusion()
             ));
 
-    public static final RegistryObject<Block> SNOWDO_EGG = registerBlock("snowdo_eggs",
-            () -> new SnowdoEggBlock(BlockBehaviour.Properties.copy(Blocks.TURTLE_EGG).noOcclusion()));
-
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

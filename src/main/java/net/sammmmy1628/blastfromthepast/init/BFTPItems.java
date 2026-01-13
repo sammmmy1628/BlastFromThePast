@@ -10,6 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
+import net.sammmmy1628.blastfromthepast.item.custom.SnowdoEggItem;
 
 public class BFTPItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BlastFromThePast.MOD_ID);
@@ -22,6 +23,9 @@ public class BFTPItems {
 
     public static final RegistryObject<Item> SNOWDO_SPAWN_EGG = ITEMS.register("snowdo_spawn_egg",
             () -> new ForgeSpawnEggItem(BFTPEntities.SNOWDO, 0x48446e, 0x67a4da, new Item.Properties()));
+
+    public static final RegistryObject<Item> SNOWDO_EGG = ITEMS.register("snowdo_egg",
+            () -> new SnowdoEggItem(new Item.Properties().stacksTo(16))); // Stack de 16 como huevos normales
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

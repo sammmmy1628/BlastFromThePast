@@ -29,8 +29,7 @@ public class ModItemLanguageProvider extends LanguageProvider {
         add(BFTPBlocks.CEDAR_CONE.get(), "Cedar Cone");
 
         add(BFTPItems.SNOWDO_SPAWN_EGG.get(), "Snowdo Spawn Egg");
-        add(BFTPBlocks.SNOWDO_EGG.get(), "Snowdo Egg");
-
+        add(BFTPItems.SNOWDO_EGG.get(), "Snowdo Egg");
         add(BFTPItems.CEDAR_SIGN.get(), "Cedar Sign");
         add(BFTPItems.CEDAR_HANGING_SIGN.get(), "Cedar Hanging Sign");
 

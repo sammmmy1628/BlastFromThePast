@@ -1,6 +1,7 @@
 package net.sammmmy1628.blastfromthepast;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.sammmmy1628.blastfromthepast.client.model.BabySnowdoModel;
 import net.sammmmy1628.blastfromthepast.client.model.SnowdoModel;
 import net.sammmmy1628.blastfromthepast.client.renderer.SnowdoRenderer;
 import net.sammmmy1628.blastfromthepast.entity.custom.SnowdoEntity;
@@ -67,12 +69,14 @@ public class BlastFromThePast
         @SubscribeEvent
         public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
             event.registerLayerDefinition(SnowdoModel.LAYER_LOCATION, SnowdoModel::createBodyLayer);
+            event.registerLayerDefinition(BabySnowdoModel.LAYER_LOCATION, BabySnowdoModel::createBodyLayer);
         }
 
         // Registrar Renderer
         @SubscribeEvent
         public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(BFTPEntities.SNOWDO.get(), SnowdoRenderer::new);
+            event.registerEntityRenderer(BFTPEntities.THROWN_SNOWDO_EGG.get(), ThrownItemRenderer::new);
         }
     }
 }

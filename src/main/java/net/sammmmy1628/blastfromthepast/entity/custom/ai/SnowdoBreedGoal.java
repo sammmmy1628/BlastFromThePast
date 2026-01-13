@@ -1,14 +1,13 @@
 package net.sammmmy1628.blastfromthepast.entity.custom.ai;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.sammmmy1628.blastfromthepast.block.custom.eggs.SnowdoEggBlock;
-import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
+import net.sammmmy1628.blastfromthepast.init.BFTPItems;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -87,39 +86,20 @@ public class SnowdoBreedGoal extends Goal {
     }
 
     protected void breed() {
-        int number = this.animal.getRandom().nextInt(3) + 1;
-        boolean eggSpawnFailed = false;
+        int count = this.animal.getRandom().nextInt(3) + 1;
 
-        BlockState snowdoEggs = BFTPBlocks.SNOWDO_EGG.get().defaultBlockState().setValue(SnowdoEggBlock.EGGS, number);
+        this.animal.spawnAtLocation(new ItemStack(BFTPItems.SNOWDO_EGG.get(), count));
 
-        BlockPos eggsPos = this.animal.blockPosition();
-
-        if(!this.animal.level().getBlockState(this.animal.blockPosition()).canBeReplaced()){
-            eggsPos = findSuitableEggPosition(this.animal.blockPosition());
-            if(eggsPos.equals(this.animal.blockPosition()) && !this.animal.level().getBlockState(eggsPos).canBeReplaced()){
-                eggSpawnFailed = true;
-            }
-        }
-
-        if(!eggSpawnFailed){
-            this.level.setBlock(eggsPos, snowdoEggs, 2);
-            this.level.levelEvent(2001, eggsPos, Block.getId(snowdoEggs));
+        if (this.level instanceof ServerLevel serverLevel) {
+            serverLevel.addFreshEntity(new ExperienceOrb(serverLevel, this.animal.getX(), this.animal.getY(), this.animal.getZ(), this.animal.getRandom().nextInt(7) + 1));
         }
 
         this.animal.setAge(6000);
+        this.animal.resetLove();
+
         if (this.partner != null) {
             this.partner.setAge(6000);
             this.partner.resetLove();
         }
-        this.animal.resetLove();
-    }
-
-    private BlockPos findSuitableEggPosition(BlockPos startPos) {
-        for (BlockPos pos : BlockPos.betweenClosed(startPos.offset(-1, -1, -1), startPos.offset(1, 1, 1))) {
-            if (this.level.getBlockState(pos).isAir() && SnowdoEggBlock.onSuitableBlock(this.level, pos.above())) {
-                return pos.immutable();
-            }
-        }
-        return startPos;
     }
 }
