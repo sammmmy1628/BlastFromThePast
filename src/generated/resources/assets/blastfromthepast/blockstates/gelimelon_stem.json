@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "blastfromthepast:block/gelimelon_sprout_stage0"
+    },
+    "age=1": {
+      "model": "blastfromthepast:block/gelimelon_sprout_stage1"
+    },
+    "age=2": {
+      "model": "blastfromthepast:block/gelimelon_sprout_stage2"
+    },
+    "age=3": {
+      "model": "blastfromthepast:block/gelimelon_sprout_stage3"
+    },
+    "age=4": {
+      "model": "blastfromthepast:block/gelimelon_sprout_stage4"
+    }
+  }
+}

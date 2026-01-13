@@ -30,8 +30,14 @@ public class ModItemLanguageProvider extends LanguageProvider {
 
         add(BFTPItems.SNOWDO_SPAWN_EGG.get(), "Snowdo Spawn Egg");
         add(BFTPItems.SNOWDO_EGG.get(), "Snowdo Egg");
+        add(BFTPItems.SNOWDO_EGG_COOKED.get(), "Cooked Snowdo Egg");
+
         add(BFTPItems.CEDAR_SIGN.get(), "Cedar Sign");
         add(BFTPItems.CEDAR_HANGING_SIGN.get(), "Cedar Hanging Sign");
+
+        add(BFTPBlocks.GELIMELON_BLOCK.get(), "Gelimelon");
+        add(BFTPItems.GELIMELON_SLICE.get(), "Gelimelon Slice");
+        add(BFTPItems.GELIMELON_SEEDS.get(), "Gelimelon Seeds");
 
         add("entity.blastfromthepast.snowdo", "Snowdo");
     }

@@ -7,13 +7,13 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.block.custom.*;
-import net.sammmmy1628.blastfromthepast.block.custom.eggs.SnowdoEggBlock;
 import net.sammmmy1628.blastfromthepast.init.wood.BFTPWoodTypes;
 
 import java.util.function.Supplier;
@@ -67,6 +67,19 @@ public class BFTPBlocks {
                     .sound(SoundType.GRASS)
                     .noOcclusion()
             ));
+
+    public static final RegistryObject<Block> GELIMELON_BLOCK = registerBlock("gelimelon_block",
+            () -> new GelimelonBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .strength(1.0F)
+                    .sound(SoundType.WOOD)
+                    .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistryObject<Block> GELIMELON_STEM = BLOCKS.register("gelimelon_stem",
+            () -> new GelimelonStemBlock(BlockBehaviour.Properties.copy(Blocks.MELON_STEM)
+                    .noCollission()
+                    .instabreak()
+                    .sound(SoundType.STEM)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);

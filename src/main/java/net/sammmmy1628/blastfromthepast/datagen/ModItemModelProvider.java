@@ -40,7 +40,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(BFTPItems.CEDAR_SIGN);
         simpleItem(BFTPItems.CEDAR_HANGING_SIGN);
         simpleItem(BFTPItems.SNOWDO_EGG);
+        simpleItem(BFTPItems.SNOWDO_EGG_COOKED);
         withExistingParent(BFTPItems.SNOWDO_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        simpleItem(BFTPItems.GELIMELON_SEEDS);
+        simpleItem(BFTPItems.GELIMELON_SLICE);
+        withExistingParent(BFTPBlocks.GELIMELON_BLOCK.getId().getPath(), modLoc("block/gelimelon_block"));
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

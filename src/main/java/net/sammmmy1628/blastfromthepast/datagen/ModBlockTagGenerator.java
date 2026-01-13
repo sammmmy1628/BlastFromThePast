@@ -64,5 +64,14 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 BFTPBlocks.CEDAR_WALL_SIGN.get(),
                 BFTPBlocks.CEDAR_SIGN.get()
         );
+
+        this.tag(BlockTags.MINEABLE_WITH_AXE)
+                .add(BFTPBlocks.GELIMELON_BLOCK.get());
+
+        this.tag(BlockTags.MINEABLE_WITH_HOE)
+                .add(BFTPBlocks.GELIMELON_STEM.get());
+
+        this.tag(BlockTags.CROPS)
+                .add(BFTPBlocks.GELIMELON_STEM.get());
     }
 }

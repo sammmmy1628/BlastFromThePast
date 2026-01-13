@@ -3,12 +3,16 @@ package net.sammmmy1628.blastfromthepast.datagen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = BlastFromThePast.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -24,6 +28,12 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
 
         generator.addProvider(event.includeClient(), new ModItemLanguageProvider(packOutput, "en_us"));
+
+        event.getGenerator().addProvider(event.includeServer(), new LootTableProvider(packOutput, Set.of(), List.of(
+                new LootTableProvider.SubProviderEntry(ModBlockLootTables::new, LootContextParamSets.BLOCK)
+        )));
+
+        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
 
         ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
                 new ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));

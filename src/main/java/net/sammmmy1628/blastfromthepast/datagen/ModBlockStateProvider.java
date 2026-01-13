@@ -3,8 +3,6 @@ package net.sammmmy1628.blastfromthepast.datagen;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -12,7 +10,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
-import net.sammmmy1628.blastfromthepast.block.custom.eggs.SnowdoEggBlock;
+import net.sammmmy1628.blastfromthepast.block.custom.GelimelonStemBlock;
 import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -22,6 +20,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        // --- CEDAR WOOD SET ---
         logBlock(((RotatedPillarBlock) BFTPBlocks.CEDAR_LOG.get()));
         axisBlock((RotatedPillarBlock) BFTPBlocks.CEDAR_STRIPPED_LOG.get(), blockTexture(BFTPBlocks.CEDAR_STRIPPED_LOG.get()),
                 modLoc("block/cedar_stripped_log_top"));
@@ -44,6 +43,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(BFTPBlocks.CEDAR_CONE.get(),
                 models().getExistingFile(modLoc("block/cedar_cone")));
         blockItem(BFTPBlocks.CEDAR_CONE);
+
+        simpleBlock(BFTPBlocks.GELIMELON_BLOCK.get(),
+                models().cubeBottomTop("gelimelon_block",
+                        modLoc("block/gelimelon_side"),
+                        modLoc("block/gelimelon_bottom"),
+                        modLoc("block/gelimelon_top")));
+
+        makeGelimelonCrop((CropBlock) BFTPBlocks.GELIMELON_STEM.get(), "gelimelon_sprout", "gelimelon_sprout");
     }
 
     public void hangingSignBlock(Block signBlock, Block wallSignBlock, ResourceLocation texture) {
@@ -54,6 +61,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void saplingBlock(RegistryObject<Block> blockRegistryObject) {
         simpleBlock(blockRegistryObject.get(),
                 models().cross(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(), blockTexture(blockRegistryObject.get())).renderType("cutout"));
+    }
+
+    public void makeGelimelonCrop(CropBlock block, String modelName, String textureName) {
+        getVariantBuilder(block).forAllStates(state -> {
+            int i = state.getValue(GelimelonStemBlock.AGE);
+
+            var model = models().cross(modelName + "_stage" + i,
+                    modLoc("block/" + textureName + "_stage" + i)).renderType("cutout");
+
+            return ConfiguredModel.builder().modelFile(model).build();
+        });
     }
 
     public void hangingSignBlock(Block signBlock, Block wallSignBlock, ModelFile sign) {

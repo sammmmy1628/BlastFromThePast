@@ -43,6 +43,11 @@ public class BFTPCreativeModeTabs {
 
                         pOutput.accept(BFTPItems.SNOWDO_SPAWN_EGG.get());
                         pOutput.accept(BFTPItems.SNOWDO_EGG.get());
+                        pOutput.accept(BFTPItems.SNOWDO_EGG_COOKED.get());
+
+                        pOutput.accept(BFTPBlocks.GELIMELON_BLOCK.get());
+                        pOutput.accept(BFTPItems.GELIMELON_SLICE.get());
+                        pOutput.accept(BFTPItems.GELIMELON_SEEDS.get());
                     })
                     .build());
 

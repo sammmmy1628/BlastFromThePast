@@ -1,7 +1,9 @@
 package net.sammmmy1628.blastfromthepast.init;
 
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.SignItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,7 +27,23 @@ public class BFTPItems {
             () -> new ForgeSpawnEggItem(BFTPEntities.SNOWDO, 0x48446e, 0x67a4da, new Item.Properties()));
 
     public static final RegistryObject<Item> SNOWDO_EGG = ITEMS.register("snowdo_egg",
-            () -> new SnowdoEggItem(new Item.Properties().stacksTo(16))); // Stack de 16 como huevos normales
+            () -> new SnowdoEggItem(new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> GELIMELON_SLICE = ITEMS.register("gelimelon_slice",
+            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .nutrition(2) // Similar al melón
+                    .saturationMod(0.3F)
+                    .build())));
+
+    public static final RegistryObject<Item> GELIMELON_SEEDS = ITEMS.register("gelimelon_seeds",
+            () -> new ItemNameBlockItem(BFTPBlocks.GELIMELON_STEM.get(),
+                    new Item.Properties()));
+
+    public static final RegistryObject<Item> SNOWDO_EGG_COOKED = ITEMS.register("snowdo_egg_cooked",
+            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .nutrition(6)
+                    .saturationMod(0.6F)
+                    .build())));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
