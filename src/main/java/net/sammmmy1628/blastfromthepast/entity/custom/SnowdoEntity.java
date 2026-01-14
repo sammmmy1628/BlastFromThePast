@@ -7,7 +7,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource; // Importante para causeFallDamage
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -22,7 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.phys.Vec3; // Importante para física
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
 import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoBreedGoal;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
@@ -43,10 +45,14 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public final AnimationState idleState = new AnimationState();
     public final AnimationState tripState = new AnimationState();
     public final AnimationState fallState = new AnimationState();
+    public final AnimationState tailState = new AnimationState();
 
     public float sprintProgress = 0.0F;
     private int shearTimer;
     private int tripTicks;
+
+    public int rideCooldown = 0;
+    private int tailAnimationCooldown = 80;
 
     public SnowdoEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -99,32 +105,104 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         if (this.level().isClientSide()) {
             this.updateSprintProgress();
             this.updateAnimations();
-        } else {
 
-            if (this.isTripping()) {
-                this.tripTicks--;
-                if (this.tripTicks <= 0) {
-                    this.setTripped(false);
+            if (this.getVehicle() instanceof Player && !this.isGliding()) {
+                if (this.tailAnimationCooldown > 0) {
+                    this.tailAnimationCooldown--;
+                } else {
+                    this.tailAnimationCooldown = 80;
+                    this.tailState.start(this.tickCount);
                 }
             } else {
-                if (this.getRandom().nextInt(500) == 0
-                        && this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D
-                        && this.onGround()
-                        && !this.isPassenger()) {
-                    this.setTripped(true);
+                this.tailState.stop();
+            }
+        }
+
+        if (this.getVehicle() instanceof Player player) {
+
+            this.setYBodyRot(player.yBodyRot);
+            this.setYRot(player.getYRot());
+            this.setXRot(player.getXRot() * 0.5F);
+            this.yHeadRot = this.yBodyRot;
+            this.yHeadRotO = this.yBodyRot;
+
+            Vec3 vec3 = player.getDeltaMovement();
+            if (!player.onGround() && vec3.y < 0.0) {
+                player.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+                player.resetFallDistance();
+                this.setGliding(true);
+            } else {
+                this.setGliding(false);
+            }
+
+        } else {
+            Vec3 vec3 = this.getDeltaMovement();
+            if (!this.onGround() && vec3.y < 0.0) {
+                this.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+            }
+            this.setGliding(!this.onGround() && vec3.y < 0.0);
+        }
+
+        if (!this.level().isClientSide) {
+
+            if (this.rideCooldown > 0) {
+                this.rideCooldown--;
+            }
+
+            if (this.getVehicle() == null) {
+                if (this.isTripping()) {
+                    this.tripTicks--;
+                    if (this.tripTicks <= 0) {
+                        this.setTripped(false);
+                    }
+                } else {
+                    if (this.getRandom().nextInt(500) == 0
+                            && this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D
+                            && this.onGround()) {
+                        this.setTripped(true);
+                    }
                 }
             }
 
-            boolean isInAir = !this.onGround() && this.getDeltaMovement().y < 0.0;
-
-            this.setGliding(isInAir);
-
-            if (isInAir) {
-                Vec3 vec3 = this.getDeltaMovement();
-                this.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+            if (this.isSheared()) {
+                if (this.shearTimer > 0) {
+                    this.shearTimer--;
+                } else {
+                    this.setSheared(false);
+                }
             }
         }
     }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack itemstack = player.getItemInHand(hand);
+
+        if (this.rideCooldown > 0) {
+            return InteractionResult.FAIL;
+        }
+
+        if (itemstack.isEmpty() && !this.isBaby() && player.getPassengers().isEmpty()) {
+            this.startRiding(player, true);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+
+        else if (itemstack.is(Items.SHEARS)) {
+            if (!this.level().isClientSide && !this.isSheared()) {
+                this.level().playSound(null, this, SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                this.setSheared(true);
+                this.shearTimer = this.random.nextInt(1200) + 1800;
+                this.spawnAtLocation(new ItemStack(Items.FEATHER, this.random.nextIntBetweenInclusive(1, 3)));
+                itemstack.hurtAndBreak(1, player, (p) -> p.broadcastBreakEvent(hand));
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.CONSUME;
+        }
+
+        return super.mobInteract(player, hand);
+    }
+
+    // ... Resto de métodos (causeFallDamage, aiStep, get/set, etc.) sin cambios ...
 
     @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
@@ -199,18 +277,27 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     }
 
     protected void updateAnimations() {
+        if (this.isPassenger()) {
+            if (this.isGliding()) {
+                this.fallState.startIfStopped(this.tickCount);
+                this.idleState.stop();
+            } else {
+                this.fallState.stop();
+                this.idleState.startIfStopped(this.tickCount);
+            }
+            return;
+        }
+
         if (!this.isMoving() && !this.isGliding()) {
             this.idleState.startIfStopped(this.tickCount);
         } else {
             this.idleState.stop();
         }
-
         if (this.isTripping()) {
             this.tripState.startIfStopped(this.tickCount);
         } else {
             this.tripState.stop();
         }
-
         if (this.isGliding()) {
             this.fallState.startIfStopped(this.tickCount);
             this.idleState.stop();
@@ -246,6 +333,8 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         tag.putInt("ShearTimer", this.shearTimer);
         tag.putBoolean("Tripped", this.isTripping());
         tag.putInt("TripTicks", this.tripTicks);
+        // Guardamos el cooldown por si el servidor se cierra
+        tag.putInt("RideCooldown", this.rideCooldown);
     }
 
     @Override
@@ -257,6 +346,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
             this.setTripped(true);
             this.tripTicks = tag.getInt("TripTicks");
         }
+        this.rideCooldown = tag.getInt("RideCooldown");
     }
 
     @Override

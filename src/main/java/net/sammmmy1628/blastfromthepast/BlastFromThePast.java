@@ -23,6 +23,7 @@ import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.init.BFTPCreativeModeTabs;
 import net.sammmmy1628.blastfromthepast.init.BFTPItems;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
+import net.sammmmy1628.blastfromthepast.network.ModMessages;
 import org.slf4j.Logger;
 
 @Mod(BlastFromThePast.MOD_ID)
@@ -45,6 +46,7 @@ public class BlastFromThePast
         BFTPBlocks.register(modEventBus);
         BFTPItems.register(modEventBus);
         BFTPEntities.register(modEventBus);
+        ModMessages.register();
 
     }
 

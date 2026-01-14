@@ -1,0 +1,14 @@
+{
+  "package": "net.sammmmy1628.blastfromthepast.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "blastfromthepast.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "client.HumanoidModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
