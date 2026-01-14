@@ -2,7 +2,9 @@ package net.sammmmy1628.blastfromthepast.block.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +17,6 @@ import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.init.BFTPItems;
 
 public class GelimelonStemBlock extends CropBlock {
-    // CAMBIO: Usamos AGE_4 porque tienes 5 etapas (0, 1, 2, 3, 4)
     public static final IntegerProperty AGE = BlockStateProperties.AGE_4;
 
     public GelimelonStemBlock(Properties properties) {
@@ -29,7 +30,7 @@ public class GelimelonStemBlock extends CropBlock {
 
     @Override
     public int getMaxAge() {
-        return 4; // El máximo es 4
+        return 4;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class GelimelonStemBlock extends CropBlock {
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
-        pLevel.scheduleTick(pPos, this, 200); // 10 segundos
+        pLevel.scheduleTick(pPos, this, 200);
     }
 
     @Override
@@ -51,11 +52,9 @@ public class GelimelonStemBlock extends CropBlock {
         int currentAge = this.getAge(pState);
 
         if (currentAge < this.getMaxAge()) {
-            // Avanzar etapa (0->1, 1->2, 2->3, 3->4)
             pLevel.setBlock(pPos, this.getStateForAge(currentAge + 1), 2);
             pLevel.scheduleTick(pPos, this, 200);
         } else {
-            // Si está en Stage 4 y pasaron 10s -> Transformar
             pLevel.setBlock(pPos, BFTPBlocks.GELIMELON_BLOCK.get().defaultBlockState(), 2);
         }
     }
@@ -74,5 +73,10 @@ public class GelimelonStemBlock extends CropBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         pBuilder.add(AGE);
+    }
+
+    @Override
+    protected boolean mayPlaceOn(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        return pState.is(BlockTags.DIRT);
     }
 }

@@ -1,10 +1,7 @@
 package net.sammmmy1628.blastfromthepast.init;
 
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.HangingSignItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.*;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -43,7 +40,12 @@ public class BFTPItems {
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(6)
                     .saturationMod(0.6F)
-                    .build())));
+                    .build())) {
+                @Override
+                public int getUseDuration(ItemStack pStack) {
+                    return 16;
+                }
+            });
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

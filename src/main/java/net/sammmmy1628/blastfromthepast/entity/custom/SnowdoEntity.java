@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource; // Importante para causeFallDamage
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -21,9 +22,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.Vec3; // Importante para física
 import net.minecraftforge.common.IForgeShearable;
 import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoBreedGoal;
-import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities; // Asegúrate de importar esto para el breeding
+import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,9 +38,11 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     private static final EntityDataAccessor<Boolean> IS_SPRINTING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_SHEARED = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_TRIPPING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_GLIDING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final AnimationState idleState = new AnimationState();
     public final AnimationState tripState = new AnimationState();
+    public final AnimationState fallState = new AnimationState();
 
     public float sprintProgress = 0.0F;
     private int shearTimer;
@@ -54,6 +58,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.entityData.define(IS_SPRINTING, false);
         this.entityData.define(IS_SHEARED, false);
         this.entityData.define(IS_TRIPPING, false);
+        this.entityData.define(IS_GLIDING, false);
     }
 
     @Override
@@ -95,6 +100,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
             this.updateSprintProgress();
             this.updateAnimations();
         } else {
+
             if (this.isTripping()) {
                 this.tripTicks--;
                 if (this.tripTicks <= 0) {
@@ -108,7 +114,24 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
                     this.setTripped(true);
                 }
             }
+
+            boolean isInAir = !this.onGround() && this.getDeltaMovement().y < 0.0;
+
+            this.setGliding(isInAir);
+
+            if (isInAir) {
+                Vec3 vec3 = this.getDeltaMovement();
+                this.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+            }
         }
+    }
+
+    @Override
+    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+        if (this.isGliding()) {
+            return false;
+        }
+        return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
     }
 
     @Override
@@ -155,6 +178,14 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.entityData.set(IS_SHEARED, sheared);
     }
 
+    public void setGliding(boolean gliding) {
+        this.entityData.set(IS_GLIDING, gliding);
+    }
+
+    public boolean isGliding() {
+        return this.entityData.get(IS_GLIDING);
+    }
+
     public boolean isMoving() {
         return this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6;
     }
@@ -168,14 +199,23 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     }
 
     protected void updateAnimations() {
-        if (!this.isMoving()) {
+        if (!this.isMoving() && !this.isGliding()) {
             this.idleState.startIfStopped(this.tickCount);
+        } else {
+            this.idleState.stop();
         }
 
         if (this.isTripping()) {
             this.tripState.startIfStopped(this.tickCount);
         } else {
             this.tripState.stop();
+        }
+
+        if (this.isGliding()) {
+            this.fallState.startIfStopped(this.tickCount);
+            this.idleState.stop();
+        } else {
+            this.fallState.stop();
         }
     }
 

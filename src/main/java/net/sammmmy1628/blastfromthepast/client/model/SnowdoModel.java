@@ -116,6 +116,8 @@ public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
             return;
         }
 
+        this.animate(entity.fallState, SnowdoAnimation.fall, ageInTicks, 1f);
+
         float idleWeight = 1.0F - Math.min(1.0F, limbSwingAmount * 4.0F);
 
         float sprintWeight = entity.sprintProgress;

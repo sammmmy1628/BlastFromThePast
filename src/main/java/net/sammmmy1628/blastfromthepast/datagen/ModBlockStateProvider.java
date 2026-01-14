@@ -20,7 +20,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        // --- CEDAR WOOD SET ---
         logBlock(((RotatedPillarBlock) BFTPBlocks.CEDAR_LOG.get()));
         axisBlock((RotatedPillarBlock) BFTPBlocks.CEDAR_STRIPPED_LOG.get(), blockTexture(BFTPBlocks.CEDAR_STRIPPED_LOG.get()),
                 modLoc("block/cedar_stripped_log_top"));
