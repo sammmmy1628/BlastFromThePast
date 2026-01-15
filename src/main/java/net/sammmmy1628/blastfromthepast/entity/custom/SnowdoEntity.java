@@ -26,10 +26,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
-import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoBreakMelonGoal;
-import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoBreedGoal;
-import net.sammmmy1628.blastfromthepast.entity.custom.ai.SnowdoEatSliceGoal;
-import net.sammmmy1628.blastfromthepast.init.BFTPItems; // Asegúrate de tener este import
+import net.sammmmy1628.blastfromthepast.entity.custom.ai.*;
+import net.sammmmy1628.blastfromthepast.entity.custom.util.SnowdoSitController;
+import net.sammmmy1628.blastfromthepast.init.BFTPItems;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +45,8 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     private static final EntityDataAccessor<Boolean> IS_GLIDING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_EATING_SLICE = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_DANCING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> SIT_STATE = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.INT);
 
     public final AnimationState idleState = new AnimationState();
     public final AnimationState tripState = new AnimationState();
@@ -53,6 +54,12 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public final AnimationState tailState = new AnimationState();
     public final AnimationState breakingState = new AnimationState();
     public final AnimationState eatingState = new AnimationState();
+    public final AnimationState danceState = new AnimationState();
+    public final AnimationState sitStartState = new AnimationState();
+    public final AnimationState sitLoopState = new AnimationState();
+    public final AnimationState sitEndState = new AnimationState();
+
+    public final SnowdoSitController sitController;
 
     public float sprintProgress = 0.0F;
     private int shearTimer;
@@ -65,6 +72,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
 
     public SnowdoEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
+        this.sitController = new SnowdoSitController(this);
     }
 
     @Override
@@ -76,18 +84,20 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.entityData.define(IS_GLIDING, false);
         this.entityData.define(IS_BREAKING, false);
         this.entityData.define(IS_EATING_SLICE, false);
+        this.entityData.define(IS_DANCING, false);
+        this.entityData.define(SIT_STATE, 0);
     }
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+
         this.goalSelector.addGoal(1, new PanicGoal(this, 2.0D) {
             @Override
             public void start() {
                 super.start();
                 SnowdoEntity.this.setSprinting(true);
             }
-
             @Override
             public void stop() {
                 super.stop();
@@ -95,14 +105,17 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
             }
         });
 
-        this.goalSelector.addGoal(2, new SnowdoBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new SnowdoEatSliceGoal(this));
-        this.goalSelector.addGoal(4, new SnowdoBreakMelonGoal(this));
-        this.goalSelector.addGoal(5, new TemptGoal(this, 1.25D, Ingredient.of(BFTPItems.GELIMELON_ICE_CREAM.get()), false));
+        this.goalSelector.addGoal(2, new SnowdoDanceGoal(this));
+        this.goalSelector.addGoal(3, new SnowdoBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new SnowdoEatSliceGoal(this));
+        this.goalSelector.addGoal(5, new SnowdoBreakMelonGoal(this));
 
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(0, new SnowdoSoftSitGoal(this));
+
+        this.goalSelector.addGoal(7, new TemptGoal(this, 1.25D, Ingredient.of(BFTPItems.GELIMELON_ICE_CREAM.get()), false));
+        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -139,8 +152,14 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
             }
         } else {
             Vec3 vec3 = this.getDeltaMovement();
+
             if (!this.onGround() && vec3.y < -0.1) {
                 this.setDeltaMovement(vec3.multiply(1.0, 0.6, 1.0));
+            }
+
+            double threshold = this.isGliding() ? -0.05 : -0.1;
+
+            if (!this.onGround() && vec3.y < threshold) {
                 this.setGliding(true);
             } else {
                 this.setGliding(false);
@@ -148,6 +167,8 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         }
 
         if (!this.level().isClientSide) {
+
+            this.sitController.tick();
 
             if (this.rideCooldown > 0) {
                 this.rideCooldown--;
@@ -220,7 +241,6 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public void aiStep() {
         super.aiStep();
         if (!this.level().isClientSide) {
-            // Lógica de Esquilado
             if (this.isSheared()) {
                 if (this.shearTimer > 0) this.shearTimer--;
                 else this.setSheared(false);
@@ -259,6 +279,11 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public void setEatingSlice(boolean eating) { this.entityData.set(IS_EATING_SLICE, eating); }
     public boolean isEatingSlice() { return this.entityData.get(IS_EATING_SLICE); }
     public boolean isMoving() { return this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6; }
+    public void setDancing(boolean dancing) {this.entityData.set(IS_DANCING, dancing);}
+    public boolean isDancing() {return this.entityData.get(IS_DANCING);}
+    public void setSitState(int state) {this.entityData.set(SIT_STATE, state);}
+    public int getSitState() {return this.entityData.get(SIT_STATE);}
+    public boolean isSittingComplex() {return this.getSitState() != 0;}
 
     private void updateSprintProgress() {
         if (this.isSprinting() && this.isMoving()) {
@@ -269,6 +294,49 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     }
 
     protected void updateAnimations() {
+        if (this.isDancing()) {
+            this.danceState.startIfStopped(this.tickCount);
+            this.idleState.stop();
+            this.sitStartState.stop();
+            this.sitLoopState.stop();
+            this.sitEndState.stop();
+            return;
+        } else {
+            this.danceState.stop();
+        }
+
+        int sitState = this.getSitState();
+
+        if (sitState > 0) {
+            this.idleState.stop();
+            this.fallState.stop();
+            this.tailState.stop();
+            this.breakingState.stop();
+            this.eatingState.stop();
+
+            if (sitState == 1) {
+                this.sitStartState.startIfStopped(this.tickCount);
+                this.sitLoopState.stop();
+                this.sitEndState.stop();
+            }
+            else if (sitState == 2) {
+                this.sitLoopState.startIfStopped(this.tickCount);
+                this.sitStartState.stop();
+                this.sitEndState.stop();
+            }
+            else if (sitState == 3) {
+                this.sitEndState.startIfStopped(this.tickCount);
+                this.sitLoopState.stop();
+                this.sitStartState.stop();
+            }
+            return;
+
+        } else {
+            this.sitStartState.stop();
+            this.sitLoopState.stop();
+            this.sitEndState.stop();
+        }
+
         if (this.isPassenger()) {
             if (this.isGliding()) {
                 this.fallState.startIfStopped(this.tickCount);
@@ -286,9 +354,10 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
                 this.tailState.stop();
             }
         } else {
-            if (!this.isMoving() && !this.isGliding()) {
+            if (!this.isMoving() && !this.isGliding() && sitState == 0) {
                 this.idleState.startIfStopped(this.tickCount);
             }
+
             if (this.isGliding()) {
                 this.fallState.startIfStopped(this.tickCount);
             }
@@ -298,11 +367,13 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
             this.tripState.startIfStopped(this.tickCount);
             this.idleState.stop();
             this.fallState.stop();
+            this.sitStartState.stop();
+            this.sitLoopState.stop();
+            this.sitEndState.stop();
         } else {
             this.tripState.stop();
         }
 
-        // --- ANIMACIONES SUPERPUESTAS (No detienen a Idle) ---
         if (this.isBreaking()) {
             this.breakingState.startIfStopped(this.tickCount);
         } else {
@@ -340,7 +411,6 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         tag.putBoolean("Tripped", this.isTripping());
         tag.putInt("TripTicks", this.tripTicks);
         tag.putInt("RideCooldown", this.rideCooldown);
-        // Guardamos el tiempo del huevo
         tag.putInt("EggTime", this.eggTime);
     }
     @Override

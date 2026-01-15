@@ -119,6 +119,11 @@ public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
             return;
         }
 
+        if (entity.isDancing()) {
+            this.animate(entity.danceState, SnowdoAnimation.dance, ageInTicks, 1.0F);
+            return;
+        }
+
         float targetFall = entity.isGliding() ? 1.0F : 0.0F;
         this.fallSmoothness = Mth.lerp(0.03F, this.fallSmoothness, targetFall);
 
@@ -141,6 +146,20 @@ public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
             }
             if (sprintWeight > 0) {
                 this.animateWalkWithWeight(SnowdoAnimation.run, limbSwing, limbSwingAmount, 2.5F, 2.5F, sprintWeight);
+            }
+        }
+
+        int sitState = entity.getSitState();
+
+        if (sitState > 0) {
+
+            if (sitState == 1) {
+                this.animate(entity.sitStartState, SnowdoAnimation.sit_start, ageInTicks, 1.0F);
+            } else if (sitState == 2) {
+                this.animate(entity.sitLoopState, SnowdoAnimation.sit, ageInTicks, 1.0F);
+
+            } else if (sitState == 3) {
+                this.animate(entity.sitEndState, SnowdoAnimation.sit_end, ageInTicks, 1.0F);
             }
         }
 
