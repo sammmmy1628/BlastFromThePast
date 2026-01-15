@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bowl"
+    },
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "item": "blastfromthepast:gelimelon_slice"
+    }
+  ],
+  "result": {
+    "item": "blastfromthepast:gelimelon_ice_cream",
+    "count": 1
+  }
+}

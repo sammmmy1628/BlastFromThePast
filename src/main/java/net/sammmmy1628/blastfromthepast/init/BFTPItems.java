@@ -47,6 +47,14 @@ public class BFTPItems {
                 }
             });
 
+    public static final RegistryObject<Item> GELIMELON_ICE_CREAM = ITEMS.register("gelimelon_ice_cream",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+                    .food(new FoodProperties.Builder()
+                            .nutrition(5)
+                            .saturationMod(0.6f)
+                            .build())));
+
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
     }

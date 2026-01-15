@@ -38,6 +38,7 @@ public class ModItemLanguageProvider extends LanguageProvider {
         add(BFTPBlocks.GELIMELON_BLOCK.get(), "Gelimelon");
         add(BFTPItems.GELIMELON_SLICE.get(), "Gelimelon Slice");
         add(BFTPItems.GELIMELON_SEEDS.get(), "Gelimelon Seeds");
+        add(BFTPItems.GELIMELON_ICE_CREAM.get(), "Gelimelon Ice Cream");
 
         add("entity.blastfromthepast.snowdo", "Snowdo");
     }

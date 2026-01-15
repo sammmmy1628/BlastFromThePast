@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.AnimationState;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.client.animation.SnowdoAnimation;
@@ -19,6 +20,8 @@ import org.joml.Vector3f;
 public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(BlastFromThePast.MOD_ID, "snowdo"), "main");
+
+    private float fallSmoothness = 0.0F;
 
     private final ModelPart root;
     private final ModelPart snowdo;
@@ -116,28 +119,41 @@ public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
             return;
         }
 
-        this.animate(entity.fallState, SnowdoAnimation.fall, ageInTicks, 1f);
-        this.animate(entity.tailState, SnowdoAnimation.tail, ageInTicks, 0.65F);
+        float targetFall = entity.isGliding() ? 1.0F : 0.0F;
+        this.fallSmoothness = Mth.lerp(0.03F, this.fallSmoothness, targetFall);
 
-        float idleWeight = 1.0F - Math.min(1.0F, limbSwingAmount * 4.0F);
+        float fallWeight = Math.min(1.0F, this.fallSmoothness * 10.0F);
+        this.animateWithWeight(entity.fallState, SnowdoAnimation.fall, ageInTicks, fallWeight);
 
-        float sprintWeight = entity.sprintProgress;
+        float groundRaw = 1.0F - this.fallSmoothness;
+        float groundWeight = groundRaw * groundRaw;
 
-        float walkWeight = 1.0F - sprintWeight;
+        if (groundWeight > 0.01F) {
+            float idleWeight = (1.0F - Math.min(1.0F, limbSwingAmount * 4.0F)) * groundWeight;
+            float sprintWeight = entity.sprintProgress * groundWeight;
+            float walkWeight = (1.0F - entity.sprintProgress) * groundWeight;
 
-        if (idleWeight > 0) {
-            this.animateWithWeight(entity.idleState, SnowdoAnimation.idle, ageInTicks, idleWeight);
+            if (idleWeight > 0) {
+                this.animateWithWeight(entity.idleState, SnowdoAnimation.idle, ageInTicks, idleWeight);
+            }
+            if (walkWeight > 0) {
+                this.animateWalkWithWeight(SnowdoAnimation.walk, limbSwing, limbSwingAmount, 3.0F, 2.5F, walkWeight);
+            }
+            if (sprintWeight > 0) {
+                this.animateWalkWithWeight(SnowdoAnimation.run, limbSwing, limbSwingAmount, 2.5F, 2.5F, sprintWeight);
+            }
         }
 
-        if (walkWeight > 0) {
-            this.animateWalkWithWeight(SnowdoAnimation.walk, limbSwing, limbSwingAmount, 3.0F, 2.5F, walkWeight);
+        this.animate(entity.tailState, SnowdoAnimation.tail, ageInTicks, 1.0F);
+
+        if (entity.isBreaking()) {
+            this.animate(entity.breakingState, SnowdoAnimation.breaking, ageInTicks, 1.0F);
         }
 
-        if (sprintWeight > 0) {
-            this.animateWalkWithWeight(SnowdoAnimation.run, limbSwing, limbSwingAmount, 2.5F, 2.5F, sprintWeight);
+        if (entity.isEatingSlice()) {
+            this.animate(entity.eatingState, SnowdoAnimation.eat, ageInTicks, 1.0F);
         }
     }
-
 
     protected void animateWithWeight(AnimationState state, AnimationDefinition definition, float ageInTicks, float weight) {
         state.updateTime(ageInTicks, 1.0F);
