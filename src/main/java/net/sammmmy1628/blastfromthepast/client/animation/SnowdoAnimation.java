@@ -929,7 +929,7 @@ public class SnowdoAnimation {
 			))
 			.build();
 
-	public static final AnimationDefinition sit_start = AnimationDefinition.Builder.withLength(0.5F)
+	public static final AnimationDefinition sit_start = AnimationDefinition.Builder.withLength(1.0F)
 			.addAnimation("snowdo", new AnimationChannel(AnimationChannel.Targets.POSITION,
 			new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
 			new Keyframe(0.5F, KeyframeAnimations.posVec(0.0F, -3.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
@@ -980,7 +980,7 @@ public class SnowdoAnimation {
 			))
 			.build();
 
-	public static final AnimationDefinition sit_end = AnimationDefinition.Builder.withLength(0.5F)
+	public static final AnimationDefinition sit_end = AnimationDefinition.Builder.withLength(1.0F)
 			.addAnimation("snowdo", new AnimationChannel(AnimationChannel.Targets.POSITION,
 			new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, -3.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(0.5F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM)

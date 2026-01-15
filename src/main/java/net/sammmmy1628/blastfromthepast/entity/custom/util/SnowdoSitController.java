@@ -7,8 +7,8 @@ public class SnowdoSitController {
     private final SnowdoEntity entity;
 
 
-    public static final int TICKS_START = 14;
-    public static final int TICKS_END = 14;
+    public static final int TICKS_START = 15;
+    public static final int TICKS_END = 15;
 
     public static final int TICKS_LOOP_MIN = 120;
 
@@ -25,21 +25,16 @@ public class SnowdoSitController {
         SitState(int id){ this.id = id; }
         public int getId() { return id; }
 
-        // Helper para convertir int -> Enum
         public static SitState byId(int id){
             for(SitState s : values()) if(s.id == id) return s;
             return NONE;
         }
     }
 
-    // --- DATA ACCESSOR (Sincronización Cliente-Servidor) ---
-    // Usaremos el ID que ya tienes en SnowdoEntity, pero lo gestionamos aquí.
-
     public SnowdoSitController(SnowdoEntity entity) {
         this.entity = entity;
     }
 
-    // --- LÓGICA PRINCIPAL (Llamar en entity.tick()) ---
     public void tick() {
         if (entity.level().isClientSide) return;
 
@@ -48,9 +43,7 @@ public class SnowdoSitController {
 
         this.stateTimer++;
 
-        // --- MÁQUINA DE ESTADOS ---
 
-        // 1. BAJANDO (START)
         if (currentState == SitState.START) {
             this.entity.getNavigation().stop();
 
@@ -59,11 +52,9 @@ public class SnowdoSitController {
             }
         }
 
-        // 2. SENTADO (LOOP)
         else if (currentState == SitState.LOOP) {
             this.entity.getNavigation().stop();
 
-            // Lógica opcional (curarse, etc.)
             if (this.entity.getRandom().nextInt(100) == 0) {
                 this.entity.heal(1.0f);
             }
@@ -73,7 +64,6 @@ public class SnowdoSitController {
             }
         }
 
-        // 3. LEVANTÁNDOSE (END)
         else if (currentState == SitState.END) {
             this.entity.getNavigation().stop();
 
@@ -83,9 +73,7 @@ public class SnowdoSitController {
         }
     }
 
-    // --- CONTROL PÚBLICO ---
 
-    // Iniciar acción (llamado por el Goal)
     public void startSitting() {
         if (getSitState() == SitState.NONE) {
             // Duración fija o variable
@@ -94,20 +82,15 @@ public class SnowdoSitController {
         }
     }
 
-    // Forzar interrupción (llamado si le pegan o hay pánico)
     public void stopSitting() {
         if (getSitState() != SitState.NONE) {
-            // Saltamos directamente a NONE (o podríamos ir a END si quisieras ser amable)
             transitionTo(SitState.NONE);
         }
     }
 
-    // --- HELPERS INTERNOS ---
-
     private void transitionTo(SitState newState) {
-        // Actualizamos el dato sincronizado en la entidad
         this.entity.setSitState(newState.getId());
-        this.stateTimer = 0; // Resetear timer para el nuevo estado
+        this.stateTimer = 0;
     }
 
     private SitState getSitState() {

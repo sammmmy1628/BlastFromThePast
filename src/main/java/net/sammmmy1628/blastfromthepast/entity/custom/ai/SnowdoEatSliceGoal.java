@@ -15,7 +15,6 @@ public class SnowdoEatSliceGoal extends Goal {
     private ItemEntity targetItem;
     private int timer;
     private boolean hasPickedUp;
-
     private int slicesEatenCount = 0;
 
     private static final int ANIMATION_DURATION = 24;
@@ -29,6 +28,8 @@ public class SnowdoEatSliceGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (this.animal.eatSliceCooldown > 0) return false;
+
         if (this.animal.isBaby() || this.animal.isVehicle()) return false;
 
         List<ItemEntity> list = this.animal.level().getEntitiesOfClass(ItemEntity.class, this.animal.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), (entity) -> {
@@ -113,6 +114,10 @@ public class SnowdoEatSliceGoal extends Goal {
 
     @Override
     public void stop() {
+        if (this.hasPickedUp) {
+            this.animal.resetEatSliceCooldown();
+        }
+
         this.targetItem = null;
         this.timer = 0;
         this.hasPickedUp = false;

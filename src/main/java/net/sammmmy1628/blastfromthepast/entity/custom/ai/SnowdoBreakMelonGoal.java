@@ -17,10 +17,10 @@ public class SnowdoBreakMelonGoal extends Goal {
     private final Level level;
     private BlockPos targetBlock = null;
     private int timer = 0;
+    private boolean successfulBreak = false;
 
-    // CONFIGURACIÓN DE TIEMPOS
-    private static final int ANIMATION_LENGTH = 25; // Duración total
-    private static final int BREAK_TICK = 15;       // Momento del impacto
+    private static final int ANIMATION_LENGTH = 25;
+    private static final int BREAK_TICK = 15;
 
     public SnowdoBreakMelonGoal(SnowdoEntity animal) {
         this.animal = animal;
@@ -30,11 +30,12 @@ public class SnowdoBreakMelonGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        // Validación básica: Solo si no está durmiendo, montado, etc.
+
+        if (this.animal.breakMelonCooldown > 0) return false;
+
         if (this.animal.isBaby() || this.animal.isVehicle()) return false;
 
-        // Probabilidad para no hacerlo todo el tiempo (opcional)
-        if (this.animal.getRandom().nextInt(100) != 0) return false;
+        if (this.animal.getRandom().nextInt(20) != 0) return false;
 
         this.targetBlock = findNearbyMelon();
         return this.targetBlock != null;
@@ -43,6 +44,7 @@ public class SnowdoBreakMelonGoal extends Goal {
     @Override
     public void start() {
         this.timer = 0;
+        this.successfulBreak = false;
         if (this.targetBlock != null) {
             this.animal.getNavigation().moveTo(this.targetBlock.getX() + 0.5D, this.targetBlock.getY(), this.targetBlock.getZ() + 0.5D, 1.0D);
         }
@@ -52,30 +54,26 @@ public class SnowdoBreakMelonGoal extends Goal {
     public void tick() {
         if (this.targetBlock == null) return;
 
-        // Mirar al bloque
         this.animal.getLookControl().setLookAt(this.targetBlock.getX() + 0.5, this.targetBlock.getY(), this.targetBlock.getZ() + 0.5);
 
         double distSq = this.animal.distanceToSqr(this.targetBlock.getX() + 0.5D, this.targetBlock.getY(), this.targetBlock.getZ() + 0.5D);
 
-        // Si está cerca (rango de 2 bloques)
         if (distSq <= 4.0D) {
             this.animal.getNavigation().stop();
             this.timer++;
 
-            // Activar animación en el servidor
             if (this.timer == 1) {
                 this.animal.setBreaking(true);
             }
 
-            // ROMPER EL BLOQUE
             if (this.timer == BREAK_TICK) {
                 BlockState state = this.level.getBlockState(this.targetBlock);
                 if (state.is(BFTPBlocks.GELIMELON_BLOCK.get())) {
                     this.level.levelEvent(2001, this.targetBlock, Block.getId(state));
                     this.level.playSound(null, this.targetBlock, SoundEvents.ZOMBIE_BREAK_WOODEN_DOOR, SoundSource.HOSTILE, 1.0f, 1.0f);
-
-                    // destroyBlock(true) hace que suelte el loot (las rodajas/slices)
                     this.level.destroyBlock(this.targetBlock, true);
+
+                    this.successfulBreak = true;
                 }
             }
         }
@@ -83,19 +81,23 @@ public class SnowdoBreakMelonGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return this.targetBlock != null && this.timer < ANIMATION_LENGTH && this.level.getBlockState(this.targetBlock).is(BFTPBlocks.GELIMELON_BLOCK.get());
+        return this.targetBlock != null && this.timer < ANIMATION_LENGTH && (this.timer >= BREAK_TICK || this.level.getBlockState(this.targetBlock).is(BFTPBlocks.GELIMELON_BLOCK.get()));
     }
 
     @Override
     public void stop() {
+        if (this.successfulBreak) {
+            this.animal.resetBreakMelonCooldown();
+        }
+
         this.targetBlock = null;
         this.timer = 0;
-        this.animal.setBreaking(false); // Apagar animación
+        this.animal.setBreaking(false);
+        this.successfulBreak = false;
     }
 
     private BlockPos findNearbyMelon() {
         BlockPos pos = this.animal.blockPosition();
-        // Buscar en un radio de 8 bloques
         for (BlockPos nearbyPos : BlockPos.betweenClosed(pos.offset(-8, -2, -8), pos.offset(8, 2, 8))) {
             if (this.level.getBlockState(nearbyPos).is(BFTPBlocks.GELIMELON_BLOCK.get())) {
                 return nearbyPos.immutable();

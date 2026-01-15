@@ -67,6 +67,8 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
 
     public int rideCooldown = 0;
     private int tailAnimationCooldown = 80;
+    public int breakMelonCooldown = 0;
+    public int eatSliceCooldown = 0;
 
     public int eggTime = this.random.nextInt(6000) + 6000;
 
@@ -90,7 +92,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
 
         this.goalSelector.addGoal(1, new PanicGoal(this, 2.0D) {
             @Override
@@ -110,7 +112,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.goalSelector.addGoal(4, new SnowdoEatSliceGoal(this));
         this.goalSelector.addGoal(5, new SnowdoBreakMelonGoal(this));
 
-        this.goalSelector.addGoal(0, new SnowdoSoftSitGoal(this));
+        this.goalSelector.addGoal(6, new SnowdoSoftSitGoal(this));
 
         this.goalSelector.addGoal(7, new TemptGoal(this, 1.25D, Ingredient.of(BFTPItems.GELIMELON_ICE_CREAM.get()), false));
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -167,6 +169,13 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         }
 
         if (!this.level().isClientSide) {
+
+            if (this.breakMelonCooldown > 0) {
+                this.breakMelonCooldown--;
+            }
+            if (this.eatSliceCooldown > 0) {
+                this.eatSliceCooldown--;
+            }
 
             this.sitController.tick();
 
@@ -304,39 +313,6 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         } else {
             this.danceState.stop();
         }
-
-        int sitState = this.getSitState();
-
-        if (sitState > 0) {
-            this.idleState.stop();
-            this.fallState.stop();
-            this.tailState.stop();
-            this.breakingState.stop();
-            this.eatingState.stop();
-
-            if (sitState == 1) {
-                this.sitStartState.startIfStopped(this.tickCount);
-                this.sitLoopState.stop();
-                this.sitEndState.stop();
-            }
-            else if (sitState == 2) {
-                this.sitLoopState.startIfStopped(this.tickCount);
-                this.sitStartState.stop();
-                this.sitEndState.stop();
-            }
-            else if (sitState == 3) {
-                this.sitEndState.startIfStopped(this.tickCount);
-                this.sitLoopState.stop();
-                this.sitStartState.stop();
-            }
-            return;
-
-        } else {
-            this.sitStartState.stop();
-            this.sitLoopState.stop();
-            this.sitEndState.stop();
-        }
-
         if (this.isPassenger()) {
             if (this.isGliding()) {
                 this.fallState.startIfStopped(this.tickCount);
@@ -354,7 +330,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
                 this.tailState.stop();
             }
         } else {
-            if (!this.isMoving() && !this.isGliding() && sitState == 0) {
+            if (!this.isMoving() && !this.isGliding()) {
                 this.idleState.startIfStopped(this.tickCount);
             }
 
@@ -388,6 +364,29 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     }
 
     @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        if (SIT_STATE.equals(pKey)) {
+            int newState = this.getSitState();
+
+            if (newState == 2) {
+                this.sitLoopState.start(this.tickCount);
+                this.sitStartState.stop();
+            }
+            else if (newState == 3) {
+                this.sitEndState.start(this.tickCount);
+                this.sitLoopState.stop();
+            }
+            else if (newState == 0) {
+                this.sitEndState.stop();
+            }
+            else if (newState == 1) {
+                this.sitStartState.start(this.tickCount);
+            }
+        }
+        super.onSyncedDataUpdated(pKey);
+    }
+
+    @Override
     public boolean isShearable(@NotNull ItemStack item, Level world, BlockPos pos) {
         return this.isAlive() && !this.isBaby() && !this.isSheared();
     }
@@ -412,6 +411,8 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         tag.putInt("TripTicks", this.tripTicks);
         tag.putInt("RideCooldown", this.rideCooldown);
         tag.putInt("EggTime", this.eggTime);
+        tag.putInt("BreakMelonCooldown", this.breakMelonCooldown);
+        tag.putInt("EatSliceCooldown", this.eatSliceCooldown);
     }
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -426,7 +427,17 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         if (tag.contains("EggTime")) {
             this.eggTime = tag.getInt("EggTime");
         }
+        if (tag.contains("BreakMelonCooldown")) {
+            this.breakMelonCooldown = tag.getInt("BreakMelonCooldown");
+        }
+        if (tag.contains("EatSliceCooldown")) {
+            this.eatSliceCooldown = tag.getInt("EatSliceCooldown");
+        }
     }
+
+    public void resetBreakMelonCooldown() {this.breakMelonCooldown = 1200 + this.random.nextInt(2401);}
+
+    public void resetEatSliceCooldown() {this.eatSliceCooldown = 1200 + this.random.nextInt(2401);}
 
     @Override
     public boolean isFood(ItemStack pStack) {
