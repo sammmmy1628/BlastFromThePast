@@ -19,8 +19,8 @@ import net.sammmmy1628.blastfromthepast.level.MultiNoiseBiomeSourceAccessor;
 @Mixin(MultiNoiseBiomeSource.class)
 public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor
 {
-	private RegistryAccess registryAccess;
-    private ResourceKey<Level> lastSampledDimension;
+	private RegistryAccess bftp$registryAccess;
+    private ResourceKey<Level> bftp$lastSampledDimension;
     
 	@Inject(at = @At("HEAD"),
 			method = "Lnet/minecraft/world/level/biome/MultiNoiseBiomeSource;getNoiseBiome(IIILnet/minecraft/world/level/biome/Climate$Sampler;)Lnet/minecraft/core/Holder;",
@@ -34,24 +34,24 @@ public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor
         float f3 = Climate.unquantizeCoord(targetPoint.humidity());
         float f4 = Climate.unquantizeCoord(targetPoint.weirdness());
         float f5 = Climate.unquantizeCoord(targetPoint.depth());
-        if(this.lastSampledDimension == Level.OVERWORLD && this.registryAccess != null) {
-            if(this.bftp$test(f, f1, f2, f3, f4, f5)) {
-            	cir.setReturnValue(this.registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(BFTPBiomes.FROSTBITE_FOREST));
+        if(this.bftp$lastSampledDimension == Level.OVERWORLD && this.bftp$registryAccess != null) {
+            if(this.bftp_test(f, f1, f2, f3, f4, f5)) {
+            	cir.setReturnValue(this.bftp$registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(BFTPBiomes.FROSTBITE_FOREST));
             }
         }
 	}
 	
 	@Override
-	public void setLastSampledDimension(ResourceKey<Level> key) {
-		this.lastSampledDimension = key;
+	public void bftp_setLastSampledDimension(ResourceKey<Level> key) {
+		this.bftp$lastSampledDimension = key;
 	}
 	
 	@Override
-	public void setRegistryAccess(RegistryAccess registryAccess) {
-		this.registryAccess = registryAccess;
+	public void bftp_setRegistryAccess(RegistryAccess registryAccess) {
+		this.bftp$registryAccess = registryAccess;
 	}
 	
-	private boolean bftp$test(float continentalness, float erosion, float temperature, float humidity, float weirdness, float depth) {
+	private boolean bftp_test(float continentalness, float erosion, float temperature, float humidity, float weirdness, float depth) {
 		if(continentalness < 0.3F || continentalness > 1.0F) {
 			return false;
 		}

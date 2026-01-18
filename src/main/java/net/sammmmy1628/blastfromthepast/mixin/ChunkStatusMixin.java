@@ -28,8 +28,8 @@ public class ChunkStatusMixin {
             method = "Lnet/minecraft/world/level/chunk/ChunkStatus;generate(Ljava/util/concurrent/Executor;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager;Lnet/minecraft/server/level/ThreadedLevelLightEngine;Ljava/util/function/Function;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;")
     private void bftp_fillFromNoise(Executor p_283276_, ServerLevel serverLevel, ChunkGenerator chunkGenerator, StructureTemplateManager p_281305_, ThreadedLevelLightEngine p_282570_, Function<ChunkAccess, CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> p_283114_, List<ChunkAccess> p_282723_, CallbackInfoReturnable<CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> cir) {
         if(chunkGenerator.getBiomeSource() instanceof MultiNoiseBiomeSourceAccessor multiNoiseBiomeSourceAccessor){
-            multiNoiseBiomeSourceAccessor.setRegistryAccess(serverLevel.registryAccess());
-            multiNoiseBiomeSourceAccessor.setLastSampledDimension(serverLevel.dimension());
+            multiNoiseBiomeSourceAccessor.bftp_setRegistryAccess(serverLevel.registryAccess());
+            multiNoiseBiomeSourceAccessor.bftp_setLastSampledDimension(serverLevel.dimension());
         }
     }
 }

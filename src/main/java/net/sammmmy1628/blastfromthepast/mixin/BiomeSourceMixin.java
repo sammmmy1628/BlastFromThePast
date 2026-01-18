@@ -24,16 +24,16 @@ public class BiomeSourceMixin implements BiomeSourceAccessor {
     @Mutable
     public Supplier<Set<Holder<Biome>>> possibleBiomes;
     
-    private boolean expanded;
+    private boolean bftp$expanded;
     
     @Override
-    public void expandBiomesWith(Set<Holder<Biome>> newGenBiomes) {
-        if(!this.expanded) {
+    public void bftp_expandBiomesWith(Set<Holder<Biome>> newGenBiomes) {
+        if(!this.bftp$expanded) {
             ImmutableSet.Builder<Holder<Biome>> builder = ImmutableSet.builder();
             builder.addAll(this.possibleBiomes.get());
             builder.addAll(newGenBiomes);
             this.possibleBiomes = Suppliers.memoize(builder::build);
-            this.expanded = true;
+            this.bftp$expanded = true;
         }
     }
 }

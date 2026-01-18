@@ -27,7 +27,7 @@ public class CommonEvents {
         
         Optional<Holder.Reference<LevelStem>> holder = levelStems.getHolder(LevelStem.OVERWORLD);
         if (holder.isPresent() && holder.get().value().generator().getBiomeSource() instanceof BiomeSourceAccessor expandedBiomeSource) {
-            expandedBiomeSource.expandBiomesWith(Set.of(biomes.getHolderOrThrow(BFTPBiomes.FROSTBITE_FOREST)));
+            expandedBiomeSource.bftp_expandBiomesWith(Set.of(biomes.getHolderOrThrow(BFTPBiomes.FROSTBITE_FOREST)));
         }
     }
 }
