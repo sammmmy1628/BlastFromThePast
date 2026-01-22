@@ -19,7 +19,7 @@ import net.sammmmy1628.blastfromthepast.init.wood.BFTPWoodTypes;
 import java.util.function.Supplier;
 
 public class BFTPBlocks {
-    public static DeferredRegister<Block> BLOCKS =
+    public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, BlastFromThePast.MOD_ID);
 
     public static final RegistryObject<Block> CEDAR_LOG = registerBlock("cedar_log",

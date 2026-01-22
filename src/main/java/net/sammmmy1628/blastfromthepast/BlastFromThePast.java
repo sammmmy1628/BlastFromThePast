@@ -21,7 +21,9 @@ import net.sammmmy1628.blastfromthepast.client.renderer.SnowdoRenderer;
 import net.sammmmy1628.blastfromthepast.entity.custom.SnowdoEntity;
 import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.init.BFTPCreativeModeTabs;
+import net.sammmmy1628.blastfromthepast.init.BFTPFeatures;
 import net.sammmmy1628.blastfromthepast.init.BFTPItems;
+import net.sammmmy1628.blastfromthepast.init.entity.BFTPBlockEntities;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
 import net.sammmmy1628.blastfromthepast.network.ModMessages;
 import org.slf4j.Logger;
@@ -46,6 +48,8 @@ public class BlastFromThePast
         BFTPBlocks.register(modEventBus);
         BFTPItems.register(modEventBus);
         BFTPEntities.register(modEventBus);
+        BFTPBlockEntities.register(modEventBus);
+        BFTPFeatures.register(modEventBus);
         ModMessages.register();
 
     }

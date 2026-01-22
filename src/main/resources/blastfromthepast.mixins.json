@@ -4,6 +4,9 @@
   "minVersion": "0.8",
   "refmap": "blastfromthepast.refmap.json",
   "mixins": [
+  	"MultiNoiseBiomeSourceMixin",
+  	"ChunkStatusMixin",
+  	"BiomeSourceMixin"
   ],
   "client": [
     "client.HumanoidModelMixin"
