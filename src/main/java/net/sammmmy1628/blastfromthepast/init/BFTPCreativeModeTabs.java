@@ -48,6 +48,7 @@ public class BFTPCreativeModeTabs {
                         pOutput.accept(BFTPBlocks.GELIMELON_BLOCK.get());
                         pOutput.accept(BFTPItems.GELIMELON_SLICE.get());
                         pOutput.accept(BFTPItems.GELIMELON_SEEDS.get());
+                        pOutput.accept(BFTPItems.GELIMELON_ICE_CREAM.get());
                     })
                     .build());
 

@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -448,5 +449,15 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         return BFTPEntities.SNOWDO.get().create(level);
+    }
+
+    @Override
+    public boolean hurt(@NotNull DamageSource pSource, float pAmount) {
+        if (this.isPassenger() && this.getVehicle() instanceof Player) {
+            if (pSource.is(DamageTypes.IN_WALL)) {
+                return false;
+            }
+        }
+        return super.hurt(pSource, pAmount);
     }
 }

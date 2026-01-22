@@ -7,8 +7,8 @@ public class SnowdoSitController {
     private final SnowdoEntity entity;
 
 
-    public static final int TICKS_START = 15;
-    public static final int TICKS_END = 15;
+    public static final int TICKS_START = 20;
+    public static final int TICKS_END = 20;
 
     public static final int TICKS_LOOP_MIN = 120;
 
@@ -76,7 +76,6 @@ public class SnowdoSitController {
 
     public void startSitting() {
         if (getSitState() == SitState.NONE) {
-            // Duración fija o variable
             this.sitDuration = TICKS_LOOP_MIN;
             transitionTo(SitState.START);
         }
