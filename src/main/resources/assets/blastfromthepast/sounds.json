@@ -1,0 +1,11 @@
+{
+  "music_disc_bftp": {
+    "sounds": [
+      {
+        "name": "blastfromthepast:music/blizzard_revelry",
+        "stream": true
+      }
+    ]
+  }
+}
+
