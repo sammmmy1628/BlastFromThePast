@@ -40,6 +40,9 @@ public class ModItemLanguageProvider extends LanguageProvider {
         add(BFTPItems.GELIMELON_SEEDS.get(), "Gelimelon Seeds");
         add(BFTPItems.GELIMELON_ICE_CREAM.get(), "Gelimelon Ice Cream");
 
+        add(BFTPItems.MUSIC_DISC_BFTP.get(), "Music Disc");
+        add("item.blastfromthepast.music_disc_bftp.desc", "Blizzard Revelry");
+
         add("entity.blastfromthepast.snowdo", "Snowdo");
     }
 }

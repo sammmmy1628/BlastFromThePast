@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
+import net.sammmmy1628.blastfromthepast.init.BFTPItems;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -59,5 +60,8 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
         this.tag(ItemTags.PLANKS).add(
                 BFTPBlocks.CEDAR_PLANKS.get().asItem());
+
+        this.tag(ItemTags.MUSIC_DISCS).add(
+                BFTPItems.MUSIC_DISC_BFTP.get());
     }
 }

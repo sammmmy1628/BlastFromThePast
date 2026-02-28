@@ -2,6 +2,7 @@ package net.sammmmy1628.blastfromthepast.init;
 
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.RecordItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -54,6 +55,9 @@ public class BFTPItems {
                             .nutrition(5)
                             .saturationMod(0.6f)
                             .build())));
+
+    public static final RegistryObject<Item> MUSIC_DISC_BFTP = ITEMS.register("music_disc_bftp",
+            () -> new RecordItem(15, BFTPSounds.MUSIC_DISC_BFTP, new Item.Properties().stacksTo(1), 3120));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

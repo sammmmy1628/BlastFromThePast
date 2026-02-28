@@ -23,6 +23,7 @@ import net.sammmmy1628.blastfromthepast.init.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.init.BFTPCreativeModeTabs;
 import net.sammmmy1628.blastfromthepast.init.BFTPFeatures;
 import net.sammmmy1628.blastfromthepast.init.BFTPItems;
+import net.sammmmy1628.blastfromthepast.init.BFTPSounds;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPBlockEntities;
 import net.sammmmy1628.blastfromthepast.init.entity.BFTPEntities;
 import net.sammmmy1628.blastfromthepast.network.ModMessages;
@@ -47,6 +48,7 @@ public class BlastFromThePast
 
         BFTPBlocks.register(modEventBus);
         BFTPItems.register(modEventBus);
+        BFTPSounds.register(modEventBus);
         BFTPEntities.register(modEventBus);
         BFTPBlockEntities.register(modEventBus);
         BFTPFeatures.register(modEventBus);

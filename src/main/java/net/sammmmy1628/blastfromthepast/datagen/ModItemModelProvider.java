@@ -45,6 +45,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(BFTPItems.GELIMELON_SEEDS);
         simpleItem(BFTPItems.GELIMELON_SLICE);
         withExistingParent(BFTPBlocks.GELIMELON_BLOCK.getId().getPath(), modLoc("block/gelimelon_block"));
+        simpleItem(BFTPItems.MUSIC_DISC_BFTP);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

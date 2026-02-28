@@ -49,6 +49,8 @@ public class BFTPCreativeModeTabs {
                         pOutput.accept(BFTPItems.GELIMELON_SLICE.get());
                         pOutput.accept(BFTPItems.GELIMELON_SEEDS.get());
                         pOutput.accept(BFTPItems.GELIMELON_ICE_CREAM.get());
+
+                        pOutput.accept(BFTPItems.MUSIC_DISC_BFTP.get());
                     })
                     .build());
 
