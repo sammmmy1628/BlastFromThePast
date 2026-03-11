@@ -69,6 +69,7 @@ public class BFTPItems
     public static final RegistryObject<Item> MUSIC_DISC_BFTP = ITEMS.register("music_disc_bftp",
             () -> new RecordItem(15, BFTPSounds.MUSIC_DISC_BFTP, new Item.Properties().stacksTo(1), 3120));
 
+    public static final RegistryObject<Item> FROSTOMPER_SPAWN_EGG = registerSpawnEgg("frostomper_spawn_egg", () -> BFTPEntities.FROSTOMPER.get(), 0x9a98ad, 0x72768e);
     
 	public static RegistryObject<Item> registerBlockItem(String name, Supplier<Block> block, Item.Properties properties)
 	{

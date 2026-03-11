@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.entity.BFTPEntities;
+import net.sammmmy1628.blastfromthepast.entity.living.FrostomperEntity;
 import net.sammmmy1628.blastfromthepast.entity.living.SnowdoEntity;
 
 @Mod.EventBusSubscriber(modid = BlastFromThePast.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -22,6 +23,7 @@ public class EventHandler
     public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) 
     {
         event.put(BFTPEntities.SNOWDO.get(), SnowdoEntity.createAttributes().build());
+        event.put(BFTPEntities.FROSTOMPER.get(), FrostomperEntity.createAttributes().build());
     }
     
     @SubscribeEvent

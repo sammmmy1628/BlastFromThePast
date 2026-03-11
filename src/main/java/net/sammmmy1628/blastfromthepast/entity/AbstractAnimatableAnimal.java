@@ -6,7 +6,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -22,18 +22,18 @@ import net.sammmmy1628.blastfromthepast.entity.ai.control.AnimationBodyRotationC
 import net.sammmmy1628.blastfromthepast.entity.ai.control.AnimationMoveControl;
 import net.sammmmy1628.blastfromthepast.entity.ai.navigation.NoSpinGroundPathNavigation;
 
-public abstract class AbstractAnimatableCreature extends PathfinderMob implements IAnimatable
+public abstract class AbstractAnimatableAnimal extends TamableAnimal implements IAnimatable
 {
-	public static final EntityDataAccessor<Integer> ANIMATION_STATE = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> ANIMATION_TICK = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> STOP_LOOK_TICK = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> STOP_MOVE_TICK = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Boolean> IS_TARGET_VALID = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> IS_ANIMATION_PLAYING = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Integer> ANIMATION_STATE = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> ANIMATION_TICK = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STOP_LOOK_TICK = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STOP_MOVE_TICK = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Boolean> IS_TARGET_VALID = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> IS_ANIMATION_PLAYING = SynchedEntityData.defineId(AbstractAnimatableAnimal.class, EntityDataSerializers.BOOLEAN);
 
 	public Vec3[] posArray;
 	
-	public AbstractAnimatableCreature(EntityType<? extends PathfinderMob> pEntityType, Level pLevel)
+	public AbstractAnimatableAnimal(EntityType<? extends TamableAnimal> pEntityType, Level pLevel)
 	{
 		super(pEntityType, pLevel);
 		this.moveControl = new AnimationMoveControl<>(this);
@@ -66,13 +66,13 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && AbstractAnimatableCreature.this.canMoveAround();
+				return super.canUse() && AbstractAnimatableAnimal.this.canMoveAround();
 			}
 			
 			@Override
 			protected Vec3 getPosition()
 			{
-				Vec2 radius = AbstractAnimatableCreature.this.getMoveRadius();
+				Vec2 radius = AbstractAnimatableAnimal.this.getMoveRadius();
 				return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 			}
 		});
@@ -81,7 +81,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && AbstractAnimatableCreature.this.canLookAround();
+				return super.canUse() && AbstractAnimatableAnimal.this.canLookAround();
 			}
 		});
 		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F)
@@ -89,7 +89,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && AbstractAnimatableCreature.this.canLookAround();
+				return super.canUse() && AbstractAnimatableAnimal.this.canLookAround();
 			}
 		});
 		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Mob.class, 8.0F)
@@ -97,7 +97,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && AbstractAnimatableCreature.this.canLookAround();
+				return super.canUse() && AbstractAnimatableAnimal.this.canLookAround();
 			}
 		});
 	}

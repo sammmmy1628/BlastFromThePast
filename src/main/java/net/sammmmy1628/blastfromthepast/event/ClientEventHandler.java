@@ -12,7 +12,9 @@ import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.block.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.entity.BFTPEntities;
 import net.sammmmy1628.blastfromthepast.entity.model.BabySnowdoModel;
+import net.sammmmy1628.blastfromthepast.entity.model.FrostomperModel;
 import net.sammmmy1628.blastfromthepast.entity.model.SnowdoModel;
+import net.sammmmy1628.blastfromthepast.entity.renderer.FrostomperRenderer;
 import net.sammmmy1628.blastfromthepast.entity.renderer.NoneRenderer;
 import net.sammmmy1628.blastfromthepast.entity.renderer.SnowdoRenderer;
 
@@ -33,6 +35,7 @@ public class ClientEventHandler
     {
         event.registerLayerDefinition(SnowdoModel.LAYER_LOCATION, SnowdoModel::createBodyLayer);
         event.registerLayerDefinition(BabySnowdoModel.LAYER_LOCATION, BabySnowdoModel::createBodyLayer);
+        event.registerLayerDefinition(FrostomperModel.LAYER_LOCATION, FrostomperModel::createBodyLayer);
     }
     
     @SubscribeEvent
@@ -41,5 +44,6 @@ public class ClientEventHandler
     	event.registerEntityRenderer(BFTPEntities.CAMERA_SHAKE.get(), NoneRenderer::new);
         event.registerEntityRenderer(BFTPEntities.SNOWDO.get(), SnowdoRenderer::new);
         event.registerEntityRenderer(BFTPEntities.THROWN_SNOWDO_EGG.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(BFTPEntities.FROSTOMPER.get(), FrostomperRenderer::new);
     }
 }

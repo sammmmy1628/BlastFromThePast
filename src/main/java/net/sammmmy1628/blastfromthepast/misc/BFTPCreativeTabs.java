@@ -52,5 +52,7 @@ public class BFTPCreativeTabs
                 output.accept(BFTPItems.GELIMELON_ICE_CREAM.get());
 
                 output.accept(BFTPItems.MUSIC_DISC_BFTP.get());
+
+                output.accept(BFTPItems.FROSTOMPER_SPAWN_EGG.get());
     		}).build());
 }

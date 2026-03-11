@@ -8,6 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
+import net.sammmmy1628.blastfromthepast.entity.living.FrostomperEntity;
 import net.sammmmy1628.blastfromthepast.entity.living.SnowdoEntity;
 import net.sammmmy1628.blastfromthepast.entity.projectile.ThrownSnowdoEgg;
 
@@ -29,6 +30,8 @@ public class BFTPEntities
                     .sized(1.0f, 1.0f)
                     .build(ResourceLocation.fromNamespaceAndPath(BlastFromThePast.MODID, "snowdo").toString()));
     
+    public static final RegistryObject<EntityType<FrostomperEntity>> FROSTOMPER = registerEntity("frostomper", createBuilder(FrostomperEntity::new, MobCategory.CREATURE).sized(3.0F, 4.375F));
+
 	public static <T extends Entity> EntityType.Builder<T> createBuilder(EntityType.EntityFactory<T> factory, MobCategory category)
 	{
 		return EntityType.Builder.<T>of(factory, category);
