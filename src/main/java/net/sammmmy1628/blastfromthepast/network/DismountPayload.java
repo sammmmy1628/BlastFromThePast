@@ -1,12 +1,12 @@
 package net.sammmmy1628.blastfromthepast.network;
 
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
-import net.sammmmy1628.blastfromthepast.entity.custom.SnowdoEntity;
-
-import java.util.function.Supplier;
+import net.sammmmy1628.blastfromthepast.entity.living.SnowdoEntity;
 
 public class DismountPayload {
     private final int entityId;

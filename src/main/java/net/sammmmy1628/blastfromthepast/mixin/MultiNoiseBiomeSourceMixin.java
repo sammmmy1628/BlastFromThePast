@@ -13,8 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
-import net.sammmmy1628.blastfromthepast.init.BFTPBiomes;
-import net.sammmmy1628.blastfromthepast.level.MultiNoiseBiomeSourceAccessor;
+import net.sammmmy1628.blastfromthepast.misc.BFTPBiomes;
+import net.sammmmy1628.blastfromthepast.world.MultiNoiseBiomeSourceAccessor;
 
 @Mixin(MultiNoiseBiomeSource.class)
 public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor

@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.sammmmy1628.blastfromthepast.level.BiomeSourceAccessor;
+import net.sammmmy1628.blastfromthepast.world.BiomeSourceAccessor;
 
 @Mixin(BiomeSource.class)
 public class BiomeSourceMixin implements BiomeSourceAccessor {

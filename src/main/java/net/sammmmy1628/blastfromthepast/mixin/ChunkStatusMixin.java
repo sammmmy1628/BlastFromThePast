@@ -19,7 +19,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.sammmmy1628.blastfromthepast.level.MultiNoiseBiomeSourceAccessor;
+import net.sammmmy1628.blastfromthepast.world.MultiNoiseBiomeSourceAccessor;
 
 @Mixin(ChunkStatus.class)
 public class ChunkStatusMixin {

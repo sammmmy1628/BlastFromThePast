@@ -1,0 +1,117 @@
+package net.sammmmy1628.blastfromthepast.block;
+
+import com.google.common.base.Supplier;
+
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.sammmmy1628.blastfromthepast.BlastFromThePast;
+import net.sammmmy1628.blastfromthepast.blockentity.ModHangingSignBlockEntity;
+import net.sammmmy1628.blastfromthepast.blockentity.ModSignBlockEntity;
+import net.sammmmy1628.blastfromthepast.item.BFTPItems;
+import net.sammmmy1628.blastfromthepast.misc.BFTPWoodTypes;
+
+public class BFTPBlocks
+{
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, BlastFromThePast.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, BlastFromThePast.MODID);
+    
+    public static final RegistryObject<Block> CEDAR_LOG = registerBlock("cedar_log",
+            () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD)
+                    .strength(6.5f, 20)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.COLOR_RED)));
+    public static final RegistryObject<Block> CEDAR_STRIPPED_LOG = registerBlock("cedar_stripped_log",
+            () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD)
+                    .strength(6.5f, 20)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(MapColor.COLOR_RED)));
+    public static final RegistryObject<Block> CEDAR_PLANKS = registerBlock("cedar_planks",
+            () -> new PlanksBlocks(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+    public static final RegistryObject<Block> CEDAR_STAIRS = registerBlock("cedar_stairs",
+            () -> new StairBlock(()-> BFTPBlocks.CEDAR_LOG.get().defaultBlockState(), BlockBehaviour.Properties.copy(Blocks.OAK_STAIRS)));
+    public static final RegistryObject<Block> CEDAR_SLAB = registerBlock("cedar_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SLAB)));
+    public static final RegistryObject<Block> CEDAR_BUTTON = registerBlock("cedar_button",
+            () -> new ButtonBlock(BlockBehaviour.Properties.copy(Blocks.OAK_BUTTON), BlockSetType.OAK, 20,true));
+    public static final RegistryObject<Block> CEDAR_PRESSURE_PLATE = registerBlock("cedar_pressure_plate",
+            () -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.OAK_PRESSURE_PLATE), BlockSetType.OAK));
+    public static final RegistryObject<Block> CEDAR_FENCE = registerBlock("cedar_fence",
+            () -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_FENCE)));
+    public static final RegistryObject<Block> CEDAR_FENCE_GATE = registerBlock("cedar_fence_gate",
+            () -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.OAK_FENCE_GATE), SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE));
+    public static final RegistryObject<Block> CEDAR_DOOR = registerBlock("cedar_door",
+            () -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_DOOR), BlockSetType.OAK));
+    public static final RegistryObject<Block> CEDAR_TRAPDOOR = registerBlock("cedar_trapdoor",
+            () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
+
+    public static final RegistryObject<Block> CEDAR_SIGN = BLOCKS.register("cedar_sign",
+            () -> new ModStandingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN), BFTPWoodTypes.CEDAR));
+    public static final RegistryObject<Block> CEDAR_WALL_SIGN = BLOCKS.register("cedar_wall_sign",
+            () -> new ModWallSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_SIGN), BFTPWoodTypes.CEDAR));
+    public static final RegistryObject<Block> CEDAR_HANGING_SIGN = BLOCKS.register("cedar_hanging_sign",
+            () -> new ModHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_HANGING_SIGN), BFTPWoodTypes.CEDAR));
+    public static final RegistryObject<Block> CEDAR_WALL_HANGING_SIGN = BLOCKS.register("cedar_wall_hanging_sign",
+            () -> new ModWallHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_HANGING_SIGN), BFTPWoodTypes.CEDAR));
+
+    public static final RegistryObject<Block> CEDAR_CONE = registerBlock("cedar_cone",
+            () -> new CedarConeBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SLAB)
+                    .strength(0.2F)
+                    .sound(SoundType.GRASS)
+                    .noOcclusion()
+            ));
+
+    public static final RegistryObject<Block> GELIMELON_BLOCK = registerBlock("gelimelon_block",
+            () -> new GelimelonBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .strength(1.0F)
+                    .sound(SoundType.WOOD)
+                    .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistryObject<Block> GELIMELON_STEM = BLOCKS.register("gelimelon_stem",
+            () -> new GelimelonStemBlock(BlockBehaviour.Properties.copy(Blocks.MELON_STEM)
+                    .noCollission()
+                    .instabreak()
+                    .sound(SoundType.STEM)));
+    
+    public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> MOD_SIGN =
+            BLOCK_ENTITIES.register("mod_sign", () ->
+                    BlockEntityType.Builder.of(ModSignBlockEntity::new,
+                            BFTPBlocks.CEDAR_SIGN.get(), BFTPBlocks.CEDAR_WALL_SIGN.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<ModHangingSignBlockEntity>> MOD_HANGING_SIGN =
+            BLOCK_ENTITIES.register("mod_hanging_sign", () ->
+                    BlockEntityType.Builder.of(ModHangingSignBlockEntity::new,
+                            BFTPBlocks.CEDAR_HANGING_SIGN.get(), BFTPBlocks.CEDAR_WALL_HANGING_SIGN.get()).build(null));
+
+    private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, toReturn);
+        return toReturn;
+    }
+
+    private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block)
+    {
+        BFTPItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+}
