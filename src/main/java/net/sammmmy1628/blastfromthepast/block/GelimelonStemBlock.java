@@ -39,11 +39,11 @@ public class GelimelonStemBlock extends CropBlock {
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-        super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
         pLevel.scheduleTick(pPos, this, 200);
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         if (!pLevel.isAreaLoaded(pPos, 1)) return;
         if (pLevel.getRawBrightness(pPos, 0) < 9) return;

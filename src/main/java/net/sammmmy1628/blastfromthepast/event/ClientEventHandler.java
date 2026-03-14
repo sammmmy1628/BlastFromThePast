@@ -21,7 +21,8 @@ import net.sammmmy1628.blastfromthepast.entity.renderer.SnowdoRenderer;
 @Mod.EventBusSubscriber(modid = BlastFromThePast.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventHandler 
 {
-    @SubscribeEvent
+    @SuppressWarnings("removal")
+	@SubscribeEvent
     public static void onFMLClientSetup(FMLClientSetupEvent event)
     {
     	event.enqueueWork(() -> 

@@ -18,8 +18,7 @@ public abstract class HumanoidModelMixin {
     private void blastFromThePast$renderRaisedArms(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         if (entity instanceof Player player) {
             if (player.getFirstPassenger() instanceof SnowdoEntity) {
-                HumanoidModel<LivingEntity> model = (HumanoidModel<LivingEntity>) (Object) this;
-                blastFromThePast$raiseArms(model);
+                this.blastFromThePast$raiseArms(HumanoidModel.class.cast(this));
             }
         }
     }

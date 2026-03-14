@@ -28,20 +28,10 @@ public class BabySnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T
 
     private final ModelPart root;
     private final ModelPart baby;
-    private final ModelPart body;
-    private final ModelPart left_wing;
-    private final ModelPart right_wing;
-    private final ModelPart left_foot;
-    private final ModelPart right_foot;
 
     public BabySnowdoModel(ModelPart root) {
         this.root = root;
         this.baby = root.getChild("baby");
-        this.body = this.baby.getChild("body");
-        this.left_wing = this.body.getChild("left_wing");
-        this.right_wing = this.body.getChild("right_wing");
-        this.left_foot = this.baby.getChild("left_foot");
-        this.right_foot = this.baby.getChild("right_foot");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -55,21 +45,21 @@ public class BabySnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T
                 .texOffs(8, 6).addBox(0.0F, -1.5F, 2.5F, 0.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(8, 13).addBox(-1.0F, -0.5F, -4.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -3.0F, -1.0F));
 
-        PartDefinition Body_r1 = body.addOrReplaceChild("Body_r1", CubeListBuilder.create().texOffs(17, 15).addBox(-4.0F, -6.725F, -4.025F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 3.0F, -1.0F, -0.7156F, 0.0F, 0.0F));
+        body.addOrReplaceChild("Body_r1", CubeListBuilder.create().texOffs(17, 15).addBox(-4.0F, -6.725F, -4.025F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 3.0F, -1.0F, -0.7156F, 0.0F, 0.0F));
 
-        PartDefinition left_wing = body.addOrReplaceChild("left_wing", CubeListBuilder.create().texOffs(14, 11).addBox(-0.75F, -0.25F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+        body.addOrReplaceChild("left_wing", CubeListBuilder.create().texOffs(14, 11).addBox(-0.75F, -0.25F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(-0.75F, -0.25F, 1.5F, 0.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.5F, -0.5F, -0.5F));
 
-        PartDefinition right_wing = body.addOrReplaceChild("right_wing", CubeListBuilder.create().texOffs(14, 11).mirror().addBox(-0.25F, -0.25F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+        body.addOrReplaceChild("right_wing", CubeListBuilder.create().texOffs(14, 11).mirror().addBox(-0.25F, -0.25F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(0, 0).mirror().addBox(0.75F, -0.25F, 1.5F, 0.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(2.5F, -0.5F, -0.5F));
 
         PartDefinition left_foot = baby.addOrReplaceChild("left_foot", CubeListBuilder.create(), PartPose.offset(1.5F, -0.5F, -0.5F));
 
-        PartDefinition LeftFoot_r1 = left_foot.addOrReplaceChild("LeftFoot_r1", CubeListBuilder.create().texOffs(-1, 10).addBox(0.4F, -0.65F, -3.275F, 3.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, 0.5F, 0.0F, 0.2051F, -0.5149F, 0.0F));
+        left_foot.addOrReplaceChild("LeftFoot_r1", CubeListBuilder.create().texOffs(-1, 10).addBox(0.4F, -0.65F, -3.275F, 3.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, 0.5F, 0.0F, 0.2051F, -0.5149F, 0.0F));
 
         PartDefinition right_foot = baby.addOrReplaceChild("right_foot", CubeListBuilder.create(), PartPose.offset(-1.5F, -0.5F, -0.5F));
 
-        PartDefinition RightFoot_r1 = right_foot.addOrReplaceChild("RightFoot_r1", CubeListBuilder.create().texOffs(-1, 10).mirror().addBox(-3.4F, -0.65F, -3.275F, 3.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(2.0F, 0.5F, 0.0F, 0.2051F, 0.5149F, 0.0F));
+        right_foot.addOrReplaceChild("RightFoot_r1", CubeListBuilder.create().texOffs(-1, 10).mirror().addBox(-3.4F, -0.65F, -3.275F, 3.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(2.0F, 0.5F, 0.0F, 0.2051F, 0.5149F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 32, 32);
     }
