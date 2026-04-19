@@ -135,19 +135,9 @@ public class SnowdoModel<T extends SnowdoEntity> extends HierarchicalModel<T> {
             }
         }
 
-        int sitState = entity.getSitState();
-
-        if (sitState > 0) {
-
-            if (sitState == 1) {
-                this.animate(entity.sitStartState, SnowdoAnimation.sit_start, ageInTicks, 1.0F);
-            } else if (sitState == 2) {
-                this.animate(entity.sitLoopState, SnowdoAnimation.sit, ageInTicks, 1.0F);
-
-            } else if (sitState == 3) {
-                this.animate(entity.sitEndState, SnowdoAnimation.sit_end, ageInTicks, 1.0F);
-            }
-        }
+        this.animate(entity.sitStartState, SnowdoAnimation.sit_start, ageInTicks, 1.0F);
+        this.animate(entity.sitLoopState, SnowdoAnimation.sit, ageInTicks, 1.0F);
+        this.animate(entity.sitEndState, SnowdoAnimation.sit_end, ageInTicks, 1.0F);
 
         this.animate(entity.tailState, SnowdoAnimation.tail, ageInTicks, 1.0F);
 

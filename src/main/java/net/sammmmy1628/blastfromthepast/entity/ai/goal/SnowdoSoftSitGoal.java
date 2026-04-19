@@ -19,7 +19,7 @@ public class SnowdoSoftSitGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.entity.sitController.isSitting()) return true;
+        if (this.entity.isSoftSitting()) return true;
 
         if (this.entity.isPassenger() || this.entity.isVehicle() || this.entity.isInWater()) return false;
 
@@ -34,16 +34,16 @@ public class SnowdoSoftSitGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return this.entity.sitController.isSitting();
+        return this.entity.isSoftSitting();
     }
 
     @Override
     public void start() {
-        this.entity.sitController.startSitting();
+        this.entity.startSoftSit();
     }
 
     @Override
     public void stop() {
-        this.entity.sitController.stopSitting();
+        this.entity.stopSoftSit();
     }
 }

@@ -46,7 +46,6 @@ import net.sammmmy1628.blastfromthepast.entity.ai.goal.SnowdoDanceGoal;
 import net.sammmmy1628.blastfromthepast.entity.ai.goal.SnowdoEatSliceGoal;
 import net.sammmmy1628.blastfromthepast.entity.ai.goal.SnowdoSoftSitGoal;
 import net.sammmmy1628.blastfromthepast.item.BFTPItems;
-import net.sammmmy1628.blastfromthepast.misc.SnowdoSitController;
 
 public class SnowdoEntity extends Animal implements IForgeShearable {
 
@@ -57,7 +56,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     private static final EntityDataAccessor<Boolean> IS_BREAKING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_EATING_SLICE = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_DANCING = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> SIT_STATE = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> IS_SITTING_COMPLEX = SynchedEntityData.defineId(SnowdoEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final AnimationState idleState = new AnimationState();
     public final AnimationState tripState = new AnimationState();
@@ -70,8 +69,6 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public final AnimationState sitLoopState = new AnimationState();
     public final AnimationState sitEndState = new AnimationState();
 
-    public final SnowdoSitController sitController;
-
     public float sprintProgress = 0.0F;
     private int shearTimer;
     private int tripTicks;
@@ -83,9 +80,19 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
 
     public int eggTime = this.random.nextInt(6000) + 6000;
 
+    public static final int SIT_TICKS_START = 20;
+    public static final int SIT_TICKS_END = 16;
+    public static final int SIT_TICKS_LOOP_MIN = 120;
+
+    private int sitStateTimer = 0;
+    private int sitDuration = 0;
+
+    private boolean prevSittingClient = false;
+    private int clientSitTick = 0;
+    private int clientSitEndingTick = 0;
+
     public SnowdoEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
-        this.sitController = new SnowdoSitController(this);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         this.entityData.define(IS_BREAKING, false);
         this.entityData.define(IS_EATING_SLICE, false);
         this.entityData.define(IS_DANCING, false);
-        this.entityData.define(SIT_STATE, 0);
+        this.entityData.define(IS_SITTING_COMPLEX, false);
     }
 
     @Override
@@ -143,6 +150,26 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         super.tick();
 
         if (this.level().isClientSide()) {
+            boolean currentSitting = this.isSittingComplex();
+
+            if (currentSitting && !this.prevSittingClient) {
+                this.clientSitTick = 0;
+                this.clientSitEndingTick = 0;
+            } else if (!currentSitting && this.prevSittingClient) {
+                this.clientSitEndingTick = 1;
+                this.clientSitTick = 0;
+            }
+
+            if (currentSitting) {
+                this.clientSitTick++;
+            } else if (this.clientSitEndingTick > 0) {
+                this.clientSitEndingTick++;
+                if (this.clientSitEndingTick > SIT_TICKS_END) {
+                    this.clientSitEndingTick = 0;
+                }
+            }
+            this.prevSittingClient = currentSitting;
+
             this.updateSprintProgress();
             this.updateAnimations();
         }
@@ -188,7 +215,7 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
                 this.eatSliceCooldown--;
             }
 
-            this.sitController.tick();
+            this.tickSoftSitServer();
 
             if (this.rideCooldown > 0) {
                 this.rideCooldown--;
@@ -301,9 +328,44 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
     public boolean isMoving() { return this.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6; }
     public void setDancing(boolean dancing) {this.entityData.set(IS_DANCING, dancing);}
     public boolean isDancing() {return this.entityData.get(IS_DANCING);}
-    public void setSitState(int state) {this.entityData.set(SIT_STATE, state);}
-    public int getSitState() {return this.entityData.get(SIT_STATE);}
-    public boolean isSittingComplex() {return this.getSitState() != 0;}
+    public void setSittingComplex(boolean state) {this.entityData.set(IS_SITTING_COMPLEX, state);}
+    public boolean isSittingComplex() {return this.entityData.get(IS_SITTING_COMPLEX);}
+
+    public boolean isSoftSitting() {
+        return this.isSittingComplex();
+    }
+
+    public void startSoftSit() {
+        if (!this.isSittingComplex()) {
+            this.sitDuration = SIT_TICKS_LOOP_MIN;
+            this.sitStateTimer = 0;
+            this.setSittingComplex(true);
+        }
+    }
+
+    public void stopSoftSit() {
+        if (this.isSittingComplex()) {
+            this.setSittingComplex(false);
+            this.sitStateTimer = 0;
+        }
+    }
+
+    private void tickSoftSitServer() {
+        if (this.level().isClientSide || !this.isSittingComplex()) {
+            return;
+        }
+
+        this.sitStateTimer++;
+        this.getNavigation().stop();
+
+        if (this.sitStateTimer >= SIT_TICKS_START && this.sitStateTimer < this.sitDuration + SIT_TICKS_START && this.getRandom().nextInt(100) == 0) {
+            this.heal(1.0F);
+        }
+
+        if (this.sitStateTimer >= this.sitDuration + SIT_TICKS_START) {
+            this.stopSoftSit();
+        }
+    }
 
     private void updateSprintProgress() {
         if (this.isSprinting() && this.isMoving()) {
@@ -372,28 +434,30 @@ public class SnowdoEntity extends Animal implements IForgeShearable {
         } else {
             this.eatingState.stop();
         }
+
+        boolean isSitting = this.isSittingComplex();
+        boolean isSitStarting = isSitting && this.clientSitTick <= SIT_TICKS_START;
+        boolean isSitLoop = isSitting && this.clientSitTick > SIT_TICKS_START;
+        boolean isSitEnding = !isSitting && this.clientSitEndingTick > 0;
+
+        boolean isSitPlaying = (isSitStarting || isSitLoop || isSitEnding) && !this.isDancing() && !this.isTripping();
+
+        if (isSitPlaying) {
+            this.sitStartState.animateWhen(isSitStarting, this.tickCount);
+            this.sitLoopState.animateWhen(isSitLoop, this.tickCount);
+            this.sitEndState.animateWhen(isSitEnding, this.tickCount);
+            
+            // Override idle while sitting
+            this.idleState.stop();
+        } else {
+            this.sitStartState.stop();
+            this.sitLoopState.stop();
+            this.sitEndState.stop();
+        }
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        if (SIT_STATE.equals(pKey)) {
-            int newState = this.getSitState();
-
-            if (newState == 2) {
-                this.sitLoopState.start(this.tickCount);
-                this.sitStartState.stop();
-            }
-            else if (newState == 3) {
-                this.sitEndState.start(this.tickCount);
-                this.sitLoopState.stop();
-            }
-            else if (newState == 0) {
-                this.sitEndState.stop();
-            }
-            else if (newState == 1) {
-                this.sitStartState.start(this.tickCount);
-            }
-        }
         super.onSyncedDataUpdated(pKey);
     }
 
