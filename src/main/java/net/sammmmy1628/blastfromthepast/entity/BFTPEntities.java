@@ -16,7 +16,7 @@ public class BFTPEntities
 {
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, BlastFromThePast.MODID);
 
-	public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = registerEntity("camera_shake", EntityType.Builder.<EntityCameraShake>of(EntityCameraShake::new, MobCategory.MISC).sized(0.0F, 0.0F));
+	public static final RegistryObject<EntityType<CameraShakeEntity>> CAMERA_SHAKE = registerEntity("camera_shake", EntityType.Builder.<CameraShakeEntity>of(CameraShakeEntity::new, MobCategory.MISC).sized(0.0F, 0.0F));
 
     public static final RegistryObject<EntityType<ThrownSnowdoEgg>> THROWN_SNOWDO_EGG = ENTITY_TYPES.register("thrown_snowdo_egg",
             () -> EntityType.Builder.<ThrownSnowdoEgg>of(ThrownSnowdoEgg::new, MobCategory.MISC)

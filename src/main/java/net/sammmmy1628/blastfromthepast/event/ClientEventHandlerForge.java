@@ -14,7 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.config.BFTPConfig;
-import net.sammmmy1628.blastfromthepast.entity.EntityCameraShake;
+import net.sammmmy1628.blastfromthepast.entity.CameraShakeEntity;
 import net.sammmmy1628.blastfromthepast.entity.living.SnowdoEntity;
 import net.sammmmy1628.blastfromthepast.network.BFTPNetwork;
 import net.sammmmy1628.blastfromthepast.network.DismountPayload;
@@ -47,7 +47,7 @@ public class ClientEventHandlerForge
         if(player != null && BFTPConfig.cameraShakes.get())
         {
             float shakeAmplitude = 0.0F;
-            for(EntityCameraShake cameraShake : player.level.getEntitiesOfClass(EntityCameraShake.class, player.getBoundingBox().inflate(100.0F))) 
+            for(CameraShakeEntity cameraShake : player.level.getEntitiesOfClass(CameraShakeEntity.class, player.getBoundingBox().inflate(100.0F))) 
             {
                 if(cameraShake.distanceTo(player) < cameraShake.getRadius())
                 {

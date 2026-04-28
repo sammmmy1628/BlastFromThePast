@@ -150,8 +150,8 @@ public class BFTPUtil
 	
 	public static void dashToward(Entity entity, float scale)
 	{
-        float x = (float) Math.cos(Math.toRadians(entity.getYRot() + 90));
-        float z = (float) Math.sin(Math.toRadians(entity.getYRot() + 90));
+        float x = (float) Math.cos(Math.toRadians(entity.getYHeadRot() + 90));
+        float z = (float) Math.sin(Math.toRadians(entity.getYHeadRot() + 90));
         entity.push(x * scale, 0, z * scale);
 	}
 	

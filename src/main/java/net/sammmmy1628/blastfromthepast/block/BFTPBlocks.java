@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CeilingHangingSignBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
@@ -15,7 +16,10 @@ import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallHangingSignBlock;
+import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -25,8 +29,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
-import net.sammmmy1628.blastfromthepast.blockentity.ModHangingSignBlockEntity;
-import net.sammmmy1628.blastfromthepast.blockentity.ModSignBlockEntity;
 import net.sammmmy1628.blastfromthepast.item.BFTPItems;
 import net.sammmmy1628.blastfromthepast.misc.BFTPWoodTypes;
 
@@ -66,13 +68,13 @@ public class BFTPBlocks
             () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_TRAPDOOR), BlockSetType.OAK));
 
     public static final RegistryObject<Block> CEDAR_SIGN = BLOCKS.register("cedar_sign",
-            () -> new ModStandingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN), BFTPWoodTypes.CEDAR));
+            () -> new StandingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN), BFTPWoodTypes.CEDAR));
     public static final RegistryObject<Block> CEDAR_WALL_SIGN = BLOCKS.register("cedar_wall_sign",
-            () -> new ModWallSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_SIGN), BFTPWoodTypes.CEDAR));
+            () -> new WallSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_SIGN), BFTPWoodTypes.CEDAR));
     public static final RegistryObject<Block> CEDAR_HANGING_SIGN = BLOCKS.register("cedar_hanging_sign",
-            () -> new ModHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_HANGING_SIGN), BFTPWoodTypes.CEDAR));
+            () -> new CeilingHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_HANGING_SIGN), BFTPWoodTypes.CEDAR));
     public static final RegistryObject<Block> CEDAR_WALL_HANGING_SIGN = BLOCKS.register("cedar_wall_hanging_sign",
-            () -> new ModWallHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_HANGING_SIGN), BFTPWoodTypes.CEDAR));
+            () -> new WallHangingSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WALL_HANGING_SIGN), BFTPWoodTypes.CEDAR));
 
     public static final RegistryObject<Block> CEDAR_CONE = registerBlock("cedar_cone",
             () -> new CedarConeBlock(BlockBehaviour.Properties.copy(Blocks.OAK_SLAB)
@@ -94,16 +96,6 @@ public class BFTPBlocks
                     .instabreak()
                     .sound(SoundType.STEM)));
     
-    public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> MOD_SIGN =
-            BLOCK_ENTITIES.register("mod_sign", () ->
-                    BlockEntityType.Builder.of(ModSignBlockEntity::new,
-                            BFTPBlocks.CEDAR_SIGN.get(), BFTPBlocks.CEDAR_WALL_SIGN.get()).build(null));
-
-    public static final RegistryObject<BlockEntityType<ModHangingSignBlockEntity>> MOD_HANGING_SIGN =
-            BLOCK_ENTITIES.register("mod_hanging_sign", () ->
-                    BlockEntityType.Builder.of(ModHangingSignBlockEntity::new,
-                            BFTPBlocks.CEDAR_HANGING_SIGN.get(), BFTPBlocks.CEDAR_WALL_HANGING_SIGN.get()).build(null));
-
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

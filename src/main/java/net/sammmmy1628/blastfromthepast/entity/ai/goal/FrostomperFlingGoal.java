@@ -21,6 +21,10 @@ public class FrostomperFlingGoal extends AbstractAnimationGoal<FrostomperEntity>
 	@Override
 	public boolean canUse() 
 	{
+		if(this.mob.isBaby())
+		{
+			return false;
+		}
 		return super.canUse() && this.mob.distanceTo(this.mob.getTarget()) <= 3.0F;
 	}
 	

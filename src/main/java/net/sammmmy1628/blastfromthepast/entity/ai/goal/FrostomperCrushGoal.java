@@ -2,15 +2,14 @@ package net.sammmmy1628.blastfromthepast.entity.ai.goal;
 
 import java.util.List;
 
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.sammmmy1628.blastfromthepast.entity.living.FrostomperEntity;
 
-public class FrostomperStompGoal extends AbstractAnimationGoal<FrostomperEntity>
+public class FrostomperCrushGoal extends AbstractAnimationGoal<FrostomperEntity>
 {
-	public FrostomperStompGoal(FrostomperEntity mob) 
+	public FrostomperCrushGoal(FrostomperEntity mob) 
 	{
 		super(mob);
 	}
@@ -19,7 +18,7 @@ public class FrostomperStompGoal extends AbstractAnimationGoal<FrostomperEntity>
 	public void start()
 	{
 		super.start();
-		this.mob.setAnimationState(this.mob.getDirectionalStompAnimation(this.mob.getTarget()));
+		this.mob.setAnimationState(5);
 	}
 	
 	@Override
@@ -29,20 +28,19 @@ public class FrostomperStompGoal extends AbstractAnimationGoal<FrostomperEntity>
 		{
 			return false;
 		}
-		return super.canUse() && this.mob.distanceTo(this.mob.getTarget()) <= 4.0F;
+		return super.canUse() && this.mob.distanceTo(this.mob.getTarget()) <= 4.0F && this.mob.getRandom().nextInt(3) == 0;
 	}
 	
 	@Override
 	public void performSkill() 
 	{
-		this.mob.playSound(SoundEvents.GENERIC_EXPLODE, 2.0F, 1.0F);
-		float size = 2.5F;
+		float size = 3.5F;
 		List<LivingEntity> list = this.mob.level.getEntitiesOfClass(LivingEntity.class, new AABB(-size, 0.0F, -size, size, size, size).move(this.mob.getLegPos(this.mob.getAnimationState())), t -> t != this.mob && !t.isAlliedTo(this.mob));
 		list.forEach(t -> 
 		{
 			if(this.mob.doHurtTarget(t))
 			{
-				t.addDeltaMovement(new Vec3(0, 0.2F, 0));
+				t.addDeltaMovement(new Vec3(0, 0.4F, 0));
 				t.hurtMarked = true;
 			}
 		});
@@ -57,7 +55,7 @@ public class FrostomperStompGoal extends AbstractAnimationGoal<FrostomperEntity>
 	@Override
 	public int getSkillWarmupTime() 
 	{
-		return 14;
+		return 12;
 	}
 
 	@Override

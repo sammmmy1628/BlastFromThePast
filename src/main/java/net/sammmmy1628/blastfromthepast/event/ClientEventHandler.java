@@ -11,6 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.block.BFTPBlocks;
 import net.sammmmy1628.blastfromthepast.entity.BFTPEntities;
+import net.sammmmy1628.blastfromthepast.entity.model.BabyFrostomperModel;
 import net.sammmmy1628.blastfromthepast.entity.model.BabySnowdoModel;
 import net.sammmmy1628.blastfromthepast.entity.model.FrostomperModel;
 import net.sammmmy1628.blastfromthepast.entity.model.SnowdoModel;
@@ -37,6 +38,7 @@ public class ClientEventHandler
         event.registerLayerDefinition(SnowdoModel.LAYER_LOCATION, SnowdoModel::createBodyLayer);
         event.registerLayerDefinition(BabySnowdoModel.LAYER_LOCATION, BabySnowdoModel::createBodyLayer);
         event.registerLayerDefinition(FrostomperModel.LAYER_LOCATION, FrostomperModel::createBodyLayer);
+        event.registerLayerDefinition(BabyFrostomperModel.LAYER_LOCATION, BabyFrostomperModel::createBodyLayer);
     }
     
     @SubscribeEvent

@@ -6,5 +6,6 @@ import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 
 public class BFTPWoodTypes 
 {
-    public static final WoodType CEDAR = WoodType.register(new WoodType(BlastFromThePast.MODID + ":frozen_pine", BlockSetType.OAK));
+    public static final BlockSetType CDEAR_SET_TYPE = BlockSetType.register(new BlockSetType("cedar"));
+    public static final WoodType CEDAR = WoodType.register(new WoodType(BlastFromThePast.MODID + ":cedar", CDEAR_SET_TYPE));
 }

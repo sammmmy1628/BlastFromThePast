@@ -21,6 +21,7 @@ public class BFTPNetwork
 	public static void registerMessages()
 	{
 		CHANNEL.registerMessage(ID++, UpdatePosArrayPacket.class, UpdatePosArrayPacket::write, UpdatePosArrayPacket::read, UpdatePosArrayPacket::handle);
+		CHANNEL.registerMessage(ID++, UpdateAnimalJukeboxPacket.class, UpdateAnimalJukeboxPacket::write, UpdateAnimalJukeboxPacket::read, UpdateAnimalJukeboxPacket::handle);
 		CHANNEL.registerMessage(ID++, DismountPayload.class, DismountPayload::toBytes, DismountPayload::new, DismountPayload::handle);
 	}
 	

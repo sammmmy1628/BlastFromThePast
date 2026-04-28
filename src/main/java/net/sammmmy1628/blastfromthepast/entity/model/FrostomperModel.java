@@ -13,6 +13,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.entity.animation.FrostomperAnimation;
 import net.sammmmy1628.blastfromthepast.entity.living.FrostomperEntity;
@@ -206,7 +207,7 @@ public class FrostomperModel extends HierarchicalModel<FrostomperEntity>
 	public void setupAnim(FrostomperEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
-		BFTPClientUtil.animateHead(this.head, netHeadYaw, headPitch);
+		BFTPClientUtil.animateHead(this.head, Mth.clamp(netHeadYaw, -15, 15), Mth.clamp(headPitch, -15, 15));
 		entity.idleAnimationState.animateIdle(this, FrostomperAnimation.idle, ageInTicks, limbSwingAmount, 2.5F);
 		entity.stompAnimationState.animate(this, FrostomperAnimation.stomp, ageInTicks);
 		entity.stomp2AnimationState.animate(this, FrostomperAnimation.stomp_flipped, ageInTicks);
@@ -214,6 +215,9 @@ public class FrostomperModel extends HierarchicalModel<FrostomperEntity>
 		entity.earsAnimationState.animate(this, FrostomperAnimation.ears, ageInTicks);
 		entity.tailAnimationState.animate(this, FrostomperAnimation.tail, ageInTicks);
 		entity.trumpetAnimationState.animate(this, FrostomperAnimation.trumpet, ageInTicks);
+		entity.chargeAnimationState.animate(this, FrostomperAnimation.charge, ageInTicks);
+		entity.crushAnimationState.animate(this, FrostomperAnimation.crush, ageInTicks);
+		entity.danceAnimationState.animate(this, FrostomperAnimation.dance, ageInTicks);
 		
 		SmoothAnimationState.animateWalk(this, FrostomperAnimation.walk, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 	}

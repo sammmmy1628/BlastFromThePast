@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class CedarConeBlock extends Block {
 
     // Small cone body collision: from x/z 4..12, y 0..7
-    private static final VoxelShape SHAPE = Block.box(4, 0, 4, 12, 7, 12);
+    private static final VoxelShape SHAPE = Block.box(3, 0, 3, 11, 7, 11);
 
 
     public CedarConeBlock(Properties props) {
