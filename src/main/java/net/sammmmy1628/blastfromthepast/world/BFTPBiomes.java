@@ -1,4 +1,4 @@
-package net.sammmmy1628.blastfromthepast.misc;
+package net.sammmmy1628.blastfromthepast.world;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

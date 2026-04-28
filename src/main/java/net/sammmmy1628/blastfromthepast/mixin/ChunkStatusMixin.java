@@ -30,6 +30,7 @@ public class ChunkStatusMixin {
         if(chunkGenerator.getBiomeSource() instanceof MultiNoiseBiomeSourceAccessor multiNoiseBiomeSourceAccessor){
             multiNoiseBiomeSourceAccessor.bftp_setRegistryAccess(serverLevel.registryAccess());
             multiNoiseBiomeSourceAccessor.bftp_setLastSampledDimension(serverLevel.dimension());
+            multiNoiseBiomeSourceAccessor.bftp_setLastSampledWorldSeed(serverLevel.getSeed());
         }
     }
 }

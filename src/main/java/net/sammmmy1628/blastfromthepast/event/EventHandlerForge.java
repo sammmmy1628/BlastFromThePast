@@ -14,7 +14,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
-import net.sammmmy1628.blastfromthepast.misc.BFTPBiomes;
+import net.sammmmy1628.blastfromthepast.world.BFTPBiomes;
 import net.sammmmy1628.blastfromthepast.world.BiomeSourceAccessor;
 
 @Mod.EventBusSubscriber(modid = BlastFromThePast.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)

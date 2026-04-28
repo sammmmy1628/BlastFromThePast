@@ -6,7 +6,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -32,7 +31,7 @@ public class FrostomperEntity extends AbstractAnimatableAnimal
 	public AmbientType ambientType;
 	public int ambientTick;
 	
-	public FrostomperEntity(EntityType<? extends TamableAnimal> pEntityType, Level pLevel) 
+	public FrostomperEntity(EntityType<? extends AbstractAnimatableAnimal> pEntityType, Level pLevel) 
 	{
 		super(pEntityType, pLevel);
 	}
