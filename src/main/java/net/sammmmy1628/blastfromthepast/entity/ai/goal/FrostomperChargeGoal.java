@@ -42,7 +42,7 @@ public class FrostomperChargeGoal extends AbstractAnimationGoal<FrostomperEntity
 	public void tick()
 	{
 		super.tick();
-		BFTPUtil.dashToward(this.mob, 0.5F);
+		BFTPUtil.dashToward(this.mob, new Vec3(0.5F, 0.0F, 0.5F));
 		List<LivingEntity> list = this.mob.level.getEntitiesOfClass(LivingEntity.class, this.mob.getBoundingBox().inflate(2.0F), t -> t != this.mob && !t.isAlliedTo(this.mob));
 		list.forEach(t -> 
 		{

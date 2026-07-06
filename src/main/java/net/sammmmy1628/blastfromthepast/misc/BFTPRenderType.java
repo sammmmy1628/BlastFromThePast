@@ -14,10 +14,17 @@ public class BFTPRenderType extends RenderType
 	{
 		super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
 	}
-	
+
+	//fixed culling issue (an issue that other side of flat cube isn't glowing properly)
     public static RenderType eyesFix(ResourceLocation texture) 
     {
         RenderStateShard.TextureStateShard stateShard = new RenderStateShard.TextureStateShard(texture, false, false);
         return create("eyes_fix", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_EYES_SHADER).setTextureState(stateShard).setTransparencyState(ADDITIVE_TRANSPARENCY).setCullState(NO_CULL).setWriteMaskState(COLOR_WRITE).createCompositeState(false));
+    }
+    
+    public static RenderType eyesNoAlpha(ResourceLocation texture) 
+    {
+        RenderStateShard.TextureStateShard stateShard = new RenderStateShard.TextureStateShard(texture, false, false);
+        return create("eyes_no_alpha", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_EYES_SHADER).setTextureState(stateShard).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setWriteMaskState(COLOR_DEPTH_WRITE).createCompositeState(false));
     }
 }

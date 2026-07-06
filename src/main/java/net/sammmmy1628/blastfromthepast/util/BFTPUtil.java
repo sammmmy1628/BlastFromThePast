@@ -6,16 +6,22 @@ import java.util.function.Consumer;
 
 import org.joml.Math;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +29,7 @@ import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.sammmmy1628.blastfromthepast.misc.PositionTypes;
 
 public class BFTPUtil 
 {
@@ -34,6 +41,21 @@ public class BFTPUtil
 		{
 			consumer.accept(level);
 		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Iterable<Entity> getAllEntities(Level level)
+	{
+		try 
+		{
+			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) GET_ENTITY.invoke(level);
+			return entities.getAll();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -51,7 +73,57 @@ public class BFTPUtil
 		return null;
 	}
 	
-    public static boolean isNight(Level level)
+    public static boolean isMoving(Entity entity) 
+    {
+		return entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D;
+    }
+
+	//called in end of tick() method of entity class;
+	public static void forceTick(Entity entity)
+	{
+		if(entity.level instanceof ServerLevel serverLevel)
+		{
+			serverLevel.getChunkSource().updateChunkForced(entity.chunkPosition(), true);
+		}
+	}
+	
+	public static boolean isDone(ServerPlayer serverPlayer, String name)
+	{
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
+		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		return progress.isDone();
+	}
+	
+	public static void awardAdvancement(ServerPlayer serverPlayer, String name)
+	{
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
+		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		if(!progress.isDone())
+		{
+			progress.getRemainingCriteria().forEach(t ->
+			{
+				serverPlayer.getAdvancements().award(adv, t);
+			});
+		}
+	}
+	
+    public static void disableShield(LivingEntity livingEntity, DamageSource source, int ticks)
+    {
+    	if(livingEntity.isDamageSourceBlocked(source))
+    	{
+        	if(livingEntity instanceof Player player)
+        	{
+        		player.disableShield(true);
+        	}
+        	else
+        	{
+        		livingEntity.stopUsingItem();
+        		livingEntity.level.broadcastEntityEvent(livingEntity, (byte)30);
+        	}
+    	}
+    }
+	
+    public static boolean isNight(LevelAccessor level)
     {
     	return level.dayTime() % 24000L >= 13000L;
     }
@@ -97,33 +169,11 @@ public class BFTPUtil
         return Mth.sqrt(x * x + z * z);
     }
     
-	public static Vec3 getRandomPosition(Entity entity, int range)
+	public static Vec3 getSpreadPosition(RandomSource random, Vec3 startPos, Vec3 range)
 	{
-    	Vec3 vec3 = entity.position().add(Mth.randomBetweenInclusive(entity.level.random, -range, range), Mth.randomBetweenInclusive(entity.level.random, -range, range), Mth.randomBetweenInclusive(entity.level.random, -range, range));
-        return vec3;
-	}
-    
-	public static Vec3 getSpreadPosition(Level level, Vec3 startPos, double range)
-	{
-        double x = startPos.x + (level.random.nextDouble() - level.random.nextDouble()) * range + 0.5D;
-        double y = startPos.y + (level.random.nextDouble() - level.random.nextDouble()) * range + 0.5D;
-        double z = startPos.z + (level.random.nextDouble() - level.random.nextDouble()) * range + 0.5D;
-        return new Vec3(x, y, z);
-	}
-	
-	public static Vec3 getSpreadPosition(Entity entity, Vec3 range)
-	{
-        double x = entity.getX() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range.x + 0.5D;
-        double y = entity.getY() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range.y + 0.5D;
-        double z = entity.getZ() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range.z + 0.5D;
-        return new Vec3(x, y, z);
-	}
-	
-	public static Vec3 getSpreadPosition(Entity entity, double range)
-	{
-        double x = entity.getX() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range + 0.5D;
-        double y = entity.getY() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range + 0.5D;
-        double z = entity.getZ() + (entity.level.random.nextDouble() - entity.level.random.nextDouble()) * range + 0.5D;
+        double x = startPos.x + (random.nextDouble() - random.nextDouble()) * range.x + 0.5D;
+        double y = startPos.y + (random.nextDouble() - random.nextDouble()) * range.y + 0.5D;
+        double z = startPos.z + (random.nextDouble() - random.nextDouble()) * range.z + 0.5D;
         return new Vec3(x, y, z);
 	}
 	
@@ -137,29 +187,36 @@ public class BFTPUtil
 		return ModList.get().isLoaded(modid);
 	}
 	
-	public static BlockPos getGroundPos(BlockGetter level, double x, double startY, double z)
+	public static BlockPos getPosition(BlockGetter level, Vec3 position, PositionTypes types)
     {
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(x, startY, z);
+		return getPosition(level, position, types, Integer.MAX_VALUE);
+    }
+	
+	public static BlockPos getPosition(BlockGetter level, Vec3 position, PositionTypes types, int maxStep)
+    {
+		int i = 0;
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(position.x, position.y, position.z);
         do
         {
-        	mutablePos.move(Direction.DOWN);
+        	mutablePos.move(types.getDirection());
+        	i++;
         }
-        while((level.getBlockState(mutablePos).isAir() || !level.getFluidState(mutablePos).isEmpty() || !level.getBlockState(mutablePos).isCollisionShapeFullBlock(level, mutablePos)) && mutablePos.getY() > level.getMinBuildHeight());
+        while(i < maxStep && types.test(level, mutablePos));
         return mutablePos.immutable();
     }
 	
-	public static void dashToward(Entity entity, float scale)
+	public static void dashToward(Entity entity, Vec3 scale)
 	{
         float x = (float) Math.cos(Math.toRadians(entity.getYHeadRot() + 90));
         float z = (float) Math.sin(Math.toRadians(entity.getYHeadRot() + 90));
-        entity.push(x * scale, 0, z * scale);
+        entity.push(x * scale.x, scale.y, z * scale.z);
 	}
 	
-	public static void dashBackward(Entity entity, float scale)
+	public static void dashBackward(Entity entity, Vec3 scale)
 	{
-        float x = (float) Math.cos(Math.toRadians(entity.getYRot() - 90));
-        float z = (float) Math.sin(Math.toRadians(entity.getYRot() - 90));
-        entity.push(x * scale, 0, z * scale);
+        float x = (float) Math.cos(Math.toRadians(entity.getYHeadRot() - 90));
+        float z = (float) Math.sin(Math.toRadians(entity.getYHeadRot() - 90));
+        entity.push(x * scale.x, scale.y, z * scale.z);
 	}
 	
 	public static float distanceTo(Entity entity, Vec3 pos)
@@ -206,26 +263,4 @@ public class BFTPUtil
 		Vec3 motion = to.subtract(from).normalize();
 		return motion.scale(speed);
 	}
-	
-    public static double getMeleeAttackRangeSqr(float width, LivingEntity target, float multiplier)
-    {
-    	return (double)(width * multiplier * width * multiplier + target.getBbWidth());
-    }
-    
-    public static double getMeleeAttackRangeSqr(Entity owner, LivingEntity target, float multiplier)
-    {
-    	return (double)(owner.getBbWidth() * multiplier * owner.getBbWidth() * multiplier + target.getBbWidth());
-    }
-    
-    public static boolean isWithinMeleeAttackRange(Vec3 pos, float width, LivingEntity target, float multiplier)
-    {
-    	double d0 = pos.distanceToSqr(target.getX(), target.getY(), target.getZ());
-    	return d0 <= getMeleeAttackRangeSqr(width, target, multiplier);
-    }
-
-    public static boolean isWithinMeleeAttackRange(Entity owner, LivingEntity target, float multiplier)
-    {
-    	double d0 = owner.distanceToSqr(target.getX(), target.getY(), target.getZ());
-    	return d0 <= getMeleeAttackRangeSqr(owner, target, multiplier);
-    }
 }

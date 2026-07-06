@@ -21,7 +21,7 @@ public class BFTPConfig
     public BFTPConfig(ForgeConfigSpec.Builder config) 
     {
     	config.push("Client Settings");
-    	cameraShakes = config.comment("disable/enable camera shakes in various place").define("cameraShakes", true);
+    	cameraShakes = config.comment("whether camera shaking effects should be enabled in various situations.").define("cameraShakes", true);
         config.pop();
     }
 }

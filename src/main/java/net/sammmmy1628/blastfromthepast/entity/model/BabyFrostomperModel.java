@@ -16,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.sammmmy1628.blastfromthepast.BlastFromThePast;
 import net.sammmmy1628.blastfromthepast.entity.animation.BabyFrostomperAnimation;
 import net.sammmmy1628.blastfromthepast.entity.living.FrostomperEntity;
-import net.sammmmy1628.blastfromthepast.misc.SmoothAnimationState;
 import net.sammmmy1628.blastfromthepast.util.BFTPClientUtil;
 
 public class BabyFrostomperModel extends HierarchicalModel<FrostomperEntity>
@@ -100,12 +99,12 @@ public class BabyFrostomperModel extends HierarchicalModel<FrostomperEntity>
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		BFTPClientUtil.animateHead(this.head, netHeadYaw, headPitch);
-		entity.idleAnimationState.animateIdle(this, BabyFrostomperAnimation.IDLE, ageInTicks, limbSwingAmount, 1.5F);
+		entity.idleAnimationState.animateIdle(this, BabyFrostomperAnimation.IDLE, ageInTicks, limbSwingAmount, entity.babyEntries.walkEntries);
 		entity.tailAnimationState.animate(this, BabyFrostomperAnimation.TAIL, ageInTicks);
 		entity.trumpetAnimationState.animate(this, BabyFrostomperAnimation.NOISE, ageInTicks);
 		entity.danceAnimationState.animate(this, BabyFrostomperAnimation.DANCE, ageInTicks);
 		
-		SmoothAnimationState.animateWalk(this, BabyFrostomperAnimation.WALK, limbSwing, limbSwingAmount, 1.5F, 1.5F);
+		entity.walkAnimationState.animateWalk(this, BabyFrostomperAnimation.WALK, limbSwing, limbSwingAmount, 1.5F, 1.5F, entity.babyEntries.extraEntries);
 	}
 	
 	@Override

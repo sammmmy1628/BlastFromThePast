@@ -46,7 +46,9 @@ import net.sammmmy1628.blastfromthepast.entity.ai.control.FlyingLookControl;
 import net.sammmmy1628.blastfromthepast.entity.ai.navigation.NoSpinFlyingPathNavigation;
 import net.sammmmy1628.blastfromthepast.entity.ai.navigation.NoSpinGroundPathNavigation;
 import net.sammmmy1628.blastfromthepast.entity.ai.navigation.NoSpinWaterBoundPathNavigation;
+import net.sammmmy1628.blastfromthepast.misc.AnimationEntries;
 import net.sammmmy1628.blastfromthepast.misc.MobClassification;
+import net.sammmmy1628.blastfromthepast.misc.ModelPartPositions;
 
 public abstract class AbstractAnimatableAnimal extends TamableAnimal implements IAnimatable
 {
@@ -62,7 +64,8 @@ public abstract class AbstractAnimatableAnimal extends TamableAnimal implements 
 	public float rollAngleO = 0.0F;
 	public float rollAngle = 0.0F;
 	
-	public Vec3[] posArray;
+	public final AnimationEntries animationEntries = new AnimationEntries();
+	public final ModelPartPositions modelPositions;
 	
 	public AbstractAnimatableAnimal(EntityType<? extends TamableAnimal> pEntityType, Level pLevel)
 	{
@@ -83,6 +86,7 @@ public abstract class AbstractAnimatableAnimal extends TamableAnimal implements 
 			this.moveControl = new AnimationMoveControl<>(this);
 		}
 		this.noCulling = true;
+		this.modelPositions = new ModelPartPositions(this);
 	}
 	
 	@Override
@@ -485,8 +489,14 @@ public abstract class AbstractAnimatableAnimal extends TamableAnimal implements 
     	this.setStopMoveTick(pCompound.getInt("StopMoveTick"));
     	this.setAnimationTick(pCompound.getInt("AnimationTick"));
     	this.setAnimationState(pCompound.getInt("AnimationState"));
-		this.setSwim(pCompound.getBoolean("isSwim"));
-		this.setFlying(pCompound.getBoolean("isFlying"));
+		if(pCompound.contains("isSwim"))
+		{
+			this.setSwim(pCompound.getBoolean("isSwim"));
+		}
+		if(pCompound.contains("isFlying"))
+		{
+			this.setFlying(pCompound.getBoolean("isFlying"));
+		}
     }
     
     @Override
@@ -558,9 +568,9 @@ public abstract class AbstractAnimatableAnimal extends TamableAnimal implements 
 	}
     
     @Override
-    public Vec3[] getPosArray()
+    public ModelPartPositions getModelPositions()
     {
-    	return this.posArray;
+    	return this.modelPositions;
     }
 	
 	public void setTargetValid(boolean value)

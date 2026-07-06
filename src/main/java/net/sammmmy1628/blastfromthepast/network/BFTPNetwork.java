@@ -20,7 +20,7 @@ public class BFTPNetwork
 	public static int ID = 0;
 	public static void registerMessages()
 	{
-		CHANNEL.registerMessage(ID++, UpdatePosArrayPacket.class, UpdatePosArrayPacket::write, UpdatePosArrayPacket::read, UpdatePosArrayPacket::handle);
+		CHANNEL.registerMessage(ID++, UpdateModelPositionPacket.class, UpdateModelPositionPacket::write, UpdateModelPositionPacket::read, UpdateModelPositionPacket::handle);
 		CHANNEL.registerMessage(ID++, UpdateAnimalJukeboxPacket.class, UpdateAnimalJukeboxPacket::write, UpdateAnimalJukeboxPacket::read, UpdateAnimalJukeboxPacket::handle);
 		CHANNEL.registerMessage(ID++, DismountPayload.class, DismountPayload::toBytes, DismountPayload::new, DismountPayload::handle);
 	}
@@ -28,6 +28,11 @@ public class BFTPNetwork
     public static <MSG> void sendToServer(MSG message) 
     {
     	CHANNEL.sendToServer(message);
+    }
+    
+    public static <MSG> void sendNonLocal(MSG msg, ServerPlayer player) 
+    {
+        CHANNEL.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
     
     public static <MSG> void sendToAll(MSG message)

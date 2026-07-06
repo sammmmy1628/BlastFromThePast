@@ -1,7 +1,7 @@
 package net.sammmmy1628.blastfromthepast.entity;
 
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.sammmmy1628.blastfromthepast.misc.ModelPartPositions;
 
 public interface IAnimatable
 {
@@ -28,8 +28,8 @@ public interface IAnimatable
 	void moveToTarget();
 
 	void lookAtTarget();
-	
-	Vec3[] getPosArray();
+
+	ModelPartPositions getModelPositions();
 	
 	default int getMoveInterval()
 	{

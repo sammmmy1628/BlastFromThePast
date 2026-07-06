@@ -1,5 +1,7 @@
 package net.sammmmy1628.blastfromthepast.misc;
 
+import java.util.List;
+
 import org.joml.Vector3f;
 
 import net.minecraft.client.animation.AnimationDefinition;
@@ -9,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.sammmmy1628.blastfromthepast.misc.AnimationEntries.WalkAnimationEntry;
 import net.sammmmy1628.blastfromthepast.util.BFTPClientUtil;
 
 public class SmoothAnimationState extends AnimationState
@@ -18,12 +21,12 @@ public class SmoothAnimationState extends AnimationState
 	public float factorOld;
 	public float factor;
 	public final float lerpSpeed;
-	private final boolean snapRotationOnFadeOut;
+	private final boolean snapRotation;
 
-	public SmoothAnimationState(float lerpSpeed, boolean snapRotationOnFadeOut)
+	public SmoothAnimationState(float lerpSpeed, boolean snapRotation)
 	{
 		this.lerpSpeed = lerpSpeed;
-		this.snapRotationOnFadeOut = snapRotationOnFadeOut;
+		this.snapRotation = snapRotation;
 	}
 	
 	public SmoothAnimationState(float lerpSpeed)
@@ -34,6 +37,12 @@ public class SmoothAnimationState extends AnimationState
 	public SmoothAnimationState() 
 	{
 		this(0.5F);
+	}
+	
+	public void snapFactor()
+	{
+    	this.factorOld = 1.0F;
+    	this.factor = 1.0F;
 	}
 	
 	public void updateWhen(boolean updateWhen, int tickCount)
@@ -64,51 +73,48 @@ public class SmoothAnimationState extends AnimationState
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public void animateIdle(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float limbSwingAmount, float animationScaleFactor, SmoothAnimationState... states) 
+	public void animateIdle(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float limbSwingAmount)
 	{
-		float totalFactor = 1.0F;
-		float extraFactor = 0.0F;
-		for(SmoothAnimationState state : states)
-		{
-			float factor = state.factor();
-			totalFactor *= 1.0F - factor;
-			extraFactor += factor;
-		}
-		float limb = Math.min((limbSwingAmount * (totalFactor + extraFactor)) * animationScaleFactor, 1.0F);
-		this.animate(model, definition, ageInTicks, this.factor() * (1.0F - limb), 1.0F);
+		this.animateIdle(model, definition, ageInTicks, limbSwingAmount, List.of());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static void animateWalk(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor, SmoothAnimationState... states)
+	public void animateIdle(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float limbSwingAmount, List<WalkAnimationEntry> states)
 	{
-		float totalFactor = 1.0F;
-		for(SmoothAnimationState state : states)
+		float factor = this.factor();
+		for(WalkAnimationEntry walkState : states)
 		{
-			float factor = state.factor();
-			totalFactor *= 1.0F - factor;
+			SmoothAnimationState state = walkState.state();
+			float scale = Math.min(limbSwingAmount * walkState.scale(), 1.0F) * state.factor();
+			factor *= 1.0F - scale;
 		}
-		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, animationScaleFactor, totalFactor);
+		this.animate(model, definition, ageInTicks, factor, 1.0F);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public void animateWalk(HierarchicalModel<?> model, AnimationDefinition pAnimationDefinition, float pLimbSwing, float pLimbSwingAmount, float pMaxAnimationSpeed, float pAnimationScaleFactor)
+	{
+		this.animateWalk(model, pAnimationDefinition, pLimbSwing, pLimbSwingAmount, pMaxAnimationSpeed, pAnimationScaleFactor, List.of());
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void animateWalkWithFactor(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor)
+	public void animateWalk(HierarchicalModel<?> model, AnimationDefinition pAnimationDefinition, float pLimbSwing, float pLimbSwingAmount, float pMaxAnimationSpeed, float pAnimationScaleFactor, List<SmoothAnimationState> states)
 	{
-		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, animationScaleFactor, this.factor());
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public static void animateWalk(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor, float factor)
-	{
-		long i = (long)(limbSwing * 50.0F * maxAnimationSpeed);
-		float f = Math.min(limbSwingAmount * animationScaleFactor, 1.0F) * factor;
-		KeyframeAnimations.animate(model, definition, i, f, ANIMATION_VECTOR_CACHE);
+		float factor = this.factor();
+		for(SmoothAnimationState state : states)
+		{
+			factor *= 1.0F - state.factor();
+		}
+		long i = (long)(pLimbSwing * 50.0F * pMaxAnimationSpeed);
+		float f = Math.min(pLimbSwingAmount * pAnimationScaleFactor, 1.0F) * factor;
+		KeyframeAnimations.animate(model, pAnimationDefinition, i, f, ANIMATION_VECTOR_CACHE);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	public void animate(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float factor, float speed) 
 	{
 		this.updateTime(ageInTicks, speed);
-		boolean fadeSnapFullTurnRotationOnly = this.snapRotationOnFadeOut && this.factor < this.factorOld - 1.0e-4F;
-		BFTPKeyframeAnimations.animate(model, definition, this.getAccumulatedTime(), factor, factor, fadeSnapFullTurnRotationOnly, ANIMATION_VECTOR_CACHE);
+		boolean snap = this.snapRotation && this.factor < this.factorOld - 1.0e-4F;
+		BFTPKeyframeAnimations.animate(model, definition, this.getAccumulatedTime(), factor, factor, snap, ANIMATION_VECTOR_CACHE);
 	}
 }

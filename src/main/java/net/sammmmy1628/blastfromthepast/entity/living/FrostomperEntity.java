@@ -27,12 +27,14 @@ import net.sammmmy1628.blastfromthepast.entity.ai.goal.FrostomperFlingGoal;
 import net.sammmmy1628.blastfromthepast.entity.ai.goal.FrostomperStompGoal;
 import net.sammmmy1628.blastfromthepast.entity.ai.goal.LookAtTargetGoal;
 import net.sammmmy1628.blastfromthepast.entity.ai.goal.MoveToTargetGoal;
+import net.sammmmy1628.blastfromthepast.misc.AnimationEntries;
 import net.sammmmy1628.blastfromthepast.misc.SmoothAnimationState;
 import net.sammmmy1628.blastfromthepast.util.BFTPUtil;
 
 public class FrostomperEntity extends AbstractBFTPAnimal
 {
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState walkAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stompAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stomp2AnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState flingAnimationState = new SmoothAnimationState();
@@ -46,9 +48,26 @@ public class FrostomperEntity extends AbstractBFTPAnimal
 	public AmbientType ambientType;
 	public int ambientTick;
 	
+	public final AnimationEntries babyEntries = new AnimationEntries();
+	
 	public FrostomperEntity(EntityType<? extends AbstractAnimatableAnimal> pEntityType, Level pLevel) 
 	{
 		super(pEntityType, pLevel);
+		this.babyEntries.addWalkEntry(this.walkAnimationState, 1.5F);
+		this.babyEntries.addExtraEntry(this.tailAnimationState);
+		this.babyEntries.addExtraEntry(this.trumpetAnimationState);
+		this.babyEntries.addExtraEntry(this.danceAnimationState);
+		
+		this.animationEntries.addWalkEntry(this.walkAnimationState, 2.5F);
+		this.animationEntries.addExtraEntry(this.stompAnimationState);
+		this.animationEntries.addExtraEntry(this.stomp2AnimationState);
+		this.animationEntries.addExtraEntry(this.flingAnimationState);
+		this.animationEntries.addExtraEntry(this.chargeAnimationState);
+		this.animationEntries.addExtraEntry(this.crushAnimationState);
+		this.animationEntries.addExtraEntry(this.danceAnimationState);
+		this.animationEntries.addExtraEntry(this.earsAnimationState);
+		this.animationEntries.addExtraEntry(this.tailAnimationState);
+		this.animationEntries.addExtraEntry(this.trumpetAnimationState);
 	}
 	
     public static AttributeSupplier.Builder createAttributes()
@@ -130,6 +149,7 @@ public class FrostomperEntity extends AbstractBFTPAnimal
     	if(this.level.isClientSide)
     	{
     		this.idleAnimationState.updateWhen(this.getAnimationState() == 0 && this.ambientType == null && !this.isJukebox(), this.tickCount);
+    		this.walkAnimationState.updateWhen(true, this.tickCount);
     		this.stompAnimationState.updateWhen(this.isAnimationPlaying(1), this.tickCount);
     		this.stomp2AnimationState.updateWhen(this.isAnimationPlaying(2), this.tickCount);
     		this.flingAnimationState.updateWhen(this.isAnimationPlaying(3), this.tickCount);
